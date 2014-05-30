@@ -1,0 +1,29 @@
+@(title: String, userGraphForm: Form[UserGraph])
+@import helper._
+@main(title){
+
+
+<div id="opacity" class="jumbotron col-md-4 hero-spacer">
+<h2 class="white kozoka">Graf</h2>
+<legend></legend>
+	<div class="row">
+	
+		<div class="col-md-12 portfolio-item">    
+    	
+			@form(action = routes.SavedGraphs.submitEditedGraph()) { 			
+				@inputText(userGraphForm("name"), 'placeholder -> "Navn", 'class -> "form-control", '_label ->"")
+				@inputText(userGraphForm("url"), 'placeholder -> "Url", 'class -> "form-control", '_label ->"")
+				@textarea(userGraphForm("shortInfo"), 'placeholder -> "Info", 'class -> "form-control", '_label ->"")			
+				@select(
+					userGraphForm("category.id"),
+					options(UserGraphCategory.options),
+					'_label -> "",
+					'_showConstraints -> false,
+					'class -> "form-control"
+				)
+				<button class="btn btn-primary" type="submit">Save</button>
+			}
+		</div>
+	</div>
+	</div>	
+}

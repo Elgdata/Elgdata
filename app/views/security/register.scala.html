@@ -1,0 +1,20 @@
+@(title: String, registerForm: Form[AuthorisedUser]) @import helper._
+@main(title){
+
+	<h5>Registrer ny bruker</h5>
+
+	@form(action = routes.Security.submitRegisterForm()) {
+	<fieldset>
+		@inputText( registerForm("username"), '_label -> "Brukernavn" )
+		@inputPassword( registerForm("password"), '_label -> "Passord" )
+		@select(
+	                registerForm("role.id"), 
+	                options(SecurityRole.options), 
+	                '_label -> "Rolle", '_default -> "-- Velg Rolle --",
+	                '_showConstraints -> false
+	    )
+	</fieldset>
+	
+	<button type="submit">Register</button>
+	} 
+}

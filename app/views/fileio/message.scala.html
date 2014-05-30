@@ -1,0 +1,19 @@
+@(title: String, message: String, time:Integer) @main("Melding"){
+<head>
+<title>Fil lastet opp</title>
+</head>
+
+<div class="row hero-spacer">
+<div class="col-md-4">
+<div id="opacity" class="jumbotron">
+	<strong id="white">@message</strong>
+</div>
+</div>
+<div class="col-md-8">
+</div>
+</div>
+
+<script>
+	setTimeout("window.location.href=\"/\";",@time);
+</script>
+}

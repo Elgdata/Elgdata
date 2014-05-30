@@ -1,0 +1,34 @@
+@(title: String, loginForm: Form[AuthorisedUser]) @import helper._
+@main(title){
+
+<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/login.css")">
+
+
+<div class="row hero-spacer">
+	<div class="col-md-4 col-xs-4 hero-spacer"></div>
+	<div class="col-md-3 col-xs-12 hero-spacer">
+	<legend><span class="elgdata"><h3>Logg inn</h3></span></legend>  
+	 	
+	 	@form(action = routes.Security.submitLoginForm()) { 	
+		<fieldset>@inputText( loginForm("username"), 'placeholder -> "Bruker", 'class -> "form-control", '_label ->
+		"", '_showConstraints -> false ) 
+		@inputPassword( loginForm("password"), 'placeholder -> "Passord", 'class -> "form-control", '_label ->
+		"", '_showConstraints -> false )</fieldset>
+
+<button type="submit" class="btn btn-primary">Logg på</button>
+
+<input type="button" onclick="indexRedirect()" value="Avbryt" class="btn btn-danger">
+} 
+</div>
+</div>
+</div>
+
+
+<script type="text/javascript">
+function indexRedirect(){
+	window.location.href="/";	
+}
+</script>
+
+}
+

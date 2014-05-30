@@ -1,0 +1,65 @@
+@(title: String, allUsers: List[AuthorisedUser], registerForm: Form[AuthorisedUser]) 
+@import helper._
+@main(title){
+<script type="text/javascript" src="@routes.Assets.at("jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js")"></script>
+<link rel="stylesheet" href="@routes.Assets.at("jquery-ui-1.10.4.custom/css/base/jquery.ui.all.css")" type="text/css"/>
+
+
+<div class="row hero-spacer">
+<div class="col-md-10" >
+<h1 class="white kozoka">Brukere</h1>
+</div>
+<div class="col-md-3" >
+<button class="btn btn-primary" href="#" id="createUser" data-role="button" onClick="createUser()">+ Ny bruker </button>
+</div>
+</div>
+
+<div class="row">
+	<div class="col-md-12" >
+		<div class="row" id="users-all">		
+			@for(user <- allUsers){			
+				<div class="col-lg-6" id="user-@user.id">
+				<div id="opacity" class="jumbotron hero-spacer">			
+					<h3 id="white" class="elgdata"> <i class="glyphicon glyphicon-user"> </i> @user.username	</h3>		
+				<table  id="white" class="table table-condensed" id="table">
+					<tbody>						
+						<tr>
+							<td>Rolle</td>
+							<th>@user.role.name</th>
+						</tr>
+					</tbody>
+				</table>
+					<input type="button" value="Slett bruker" class="btn btn-sm btn-danger" href="#" id="deleteUser" data-role="button" onClick="deleteUser(@user.id)">
+					</div>		
+				</div>
+				}
+</div>
+</div>
+</div>
+
+<!-- Javascript - ajax -->
+<script type="text/javascript" src="@routes.JavascriptRoutes.javascriptRoutes"></script>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/security/crud.js")"></script>
+
+
+<div id="delete-user-dialog" title="Slett bruker" style="display: none;">
+<p>Er du sikker du vil slette denne?</p>
+</div>
+<div id="create-user-dialog" title="Ny bruker" style="display: none;">
+
+	@form(action = routes.Security.submitRegisterForm(), 'id -> "create-user-form") {
+	<fieldset>
+		@inputText( registerForm("username"), 'class -> "form-control", 'placeholder -> "Bruker", '_label -> "" )
+		@inputPassword( registerForm("password"), 'class -> "form-control", 'placeholder -> "Passord", '_label -> "" )
+		@select(
+	                registerForm("role.id"), 
+	                options(SecurityRole.options), 
+	                '_label -> "", '_default -> "-- Velg Rolle --",
+	                '_showConstraints -> false,
+	                'id -> "create-user-form-role",
+	                'class -> "form-control"
+	    )
+	</fieldset>
+	} 
+</div>
+}

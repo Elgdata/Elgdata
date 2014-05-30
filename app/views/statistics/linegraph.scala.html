@@ -1,0 +1,268 @@
+@(title: String, jsonString : String) @main(title){
+
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="style.css" type="text/css">
+<script src="@routes.Assets.at("javascripts/amcharts/amcharts.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/amcharts/serial.js")" type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/amexport.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/rgbcolor.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/canvg.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/filesaver.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/jspdf.js" 
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/jspdf.plugin.addimage.js" 
+	type="text/javascript"></script>
+
+<script type="text/javascript">
+        var lineChart = @Html(jsonString);
+        
+        AmCharts.ready(function () {
+        	chart = new AmCharts.AmSerialChart();
+        	chart.pathToImages = "/assets/javascripts/amcharts/images/";
+        	chart.dataProvider = lineChart;
+        	chart.categoryField = "year";
+			
+        	// AXES
+        	var categoryAxis = chart.categoryAxis;
+        	categoryAxis.gridAlpha = 0;
+        	categoryAxis.color = "white";
+        	categoryAxis.axisColor = "white";
+
+        	var valueAxis = new AmCharts.ValueAxis();
+        	valueAxis.axisAlpha = 0;
+        	valueAxis.title = "Gjennomsnittlig slaktevekt i kg";
+        	valueAxis.titleColor = "white";
+        	valueAxis.color = "white";
+        	chart.addValueAxis(valueAxis);
+
+        	// GRAPH
+        	var graph = new AmCharts.AmGraph();
+        	graph.title = "Eldre (okse)";
+        	graph.lineColor = "#df0000";
+        	graph.valueField = "adultMaleWeight";
+        	graph.bullet = "round";
+        	graph.type = "line";
+        	graph.lineThickness = 2;
+        	chart.addGraph(graph);
+        	chart.hideGraph(graph);
+        	
+        	var graph = new AmCharts.AmGraph();
+        	graph.title = "Eldre (ku)";
+        	graph.lineColor = "#079400";
+        	graph.valueField = "adultFemaleWeight";
+        	graph.bullet = "round";
+        	graph.type = "line";
+        	graph.lineThickness = 2;
+        	chart.addGraph(graph);
+        	chart.hideGraph(graph);
+        	
+        	var graph = new AmCharts.AmGraph();
+        	graph.title = "Ungdyr (okse)";
+        	graph.lineColor = "#004eff";
+        	graph.valueField = "youngMaleWeight";
+        	graph.bullet = "round";
+        	graph.type = "line";
+        	graph.lineThickness = 2;
+        	chart.addGraph(graph);
+        	chart.hideGraph(graph);
+        	
+        	var graph = new AmCharts.AmGraph();
+        	graph.title = "Ungdyr (ku)";
+        	graph.lineColor = "#ffffff";
+        	graph.valueField = "youngFemaleWeight";
+        	graph.bullet = "round";
+        	graph.type = "line";
+        	graph.lineThickness = 2;
+        	chart.addGraph(graph);
+        	chart.hideGraph(graph);
+        	
+        	var graph = new AmCharts.AmGraph();
+        	graph.title = "Kalv (okse)";
+        	graph.lineColor = "#a86eaa";
+        	graph.valueField = "calfMaleWeight";
+        	graph.bullet = "round";
+        	graph.type = "line";
+        	graph.lineThickness = 2;
+        	chart.addGraph(graph);
+        	chart.hideGraph(graph);
+        	
+        	var graph = new AmCharts.AmGraph();
+        	graph.title = "Kalv (ku)";
+        	graph.lineColor = "#e57300";
+        	graph.valueField = "calfFemaleWeight";
+        	graph.bullet = "round";
+        	graph.type = "line";
+        	graph.lineThickness = 2;
+        	chart.addGraph(graph);
+        	chart.hideGraph(graph);
+        	
+        	var graph = new AmCharts.AmGraph();
+        	graph.title = "Ukjent alder (ku)";
+        	graph.lineColor = "#000000";
+        	graph.valueField = "unknownFemaleWeight";
+        	graph.bullet = "round";
+        	graph.type = "line";
+        	graph.lineThickness = 2;
+        	chart.addGraph(graph);
+        	chart.hideGraph(graph);
+        	
+        	var graph = new AmCharts.AmGraph();
+        	graph.title = "Ukjent alder (okse)";
+        	graph.lineColor = "#8400ff";
+        	graph.valueField = "unknownMaleWeight";
+        	graph.bullet = "round";
+        	graph.type = "line";
+        	graph.lineThickness = 2;
+        	chart.addGraph(graph);
+        	chart.hideGraph(graph);
+        	
+        	var graph = new AmCharts.AmGraph();
+        	graph.title = "Sum slaktevekt";
+        	graph.lineColor = "#545498";
+        	graph.valueField = "sumWeight";
+        	graph.bullet = "round";
+        	graph.type = "line";
+        	graph.lineThickness = 2;
+        	chart.addGraph(graph);
+        	chart.hideGraph(graph);
+        	
+        	var graph = new AmCharts.AmGraph();
+        	graph.title = "Gjennomsnitt (eldre)";
+        	graph.lineColor = "#00ace6";
+        	graph.valueField = "averageWeightAdult";
+        	graph.bullet = "round";
+        	graph.type = "line";
+        	graph.lineThickness = 2;
+        	chart.addGraph(graph);
+			
+        	var graph = new AmCharts.AmGraph();
+        	graph.title = "Gjennomsnitt (ungdyr)";
+        	graph.lineColor = "#e4cd32";
+        	graph.valueField = "averageWeightYoung";
+        	graph.bullet = "round";
+        	graph.type = "line";
+        	graph.lineThickness = 2;
+        	chart.addGraph(graph);
+        	
+        	var graph = new AmCharts.AmGraph();
+        	graph.title = "Gjennomsnitt (kalv)";
+        	graph.lineColor = "#be008c";
+        	graph.valueField = "averageWeightCalf";
+        	graph.bullet = "round";
+        	graph.type = "line";
+        	graph.lineThickness = 2;
+        	chart.addGraph(graph);
+        	
+
+        	
+        	// CURSOR
+        	var chartCursor = new AmCharts.ChartCursor();
+        	chartCursor.cursorAlpha = 0;
+        	chartCursor.zoomable = true;
+        	chart.addChartCursor(chartCursor);
+
+            // SCROLLBAR -  
+            var chartScrollbar = new AmCharts.ChartScrollbar();
+            chart.addChartScrollbar(chartScrollbar); 
+            
+            // LEGEND                  
+            var legend = new AmCharts.AmLegend();
+            legend.switchable = true;
+            legend.borderAlpha = 0.2;
+            legend.horizontalGap = 13;
+            legend.color = "white";
+            chart.addLegend(legend);
+            
+         // EXPORT
+			chart.exportConfig = {
+				    menuTop: '40px',
+				    menuRight: '21px',
+				    menuBottom: 'auto',
+				    backgroundColor: '#efefef',
+				    menuItems: [{
+				        textAlign: 'center',
+				        onclick: function () {},
+				        icon: 'assets/images/download.png',
+				        iconTitle: 'Lagre som bilde',
+				        items: [{
+				            title: 'JPG',
+				            format: 'jpg'
+				        }, {
+				            title: 'PNG',
+				            format: 'png'
+				        }, {
+				            title: 'PDF',
+				            format: 'pdf'
+				        }]
+				    }],
+				    menuItemOutput:{
+				        fileName:"antall_skutt",
+				        backgroundColor:"#999999"
+				    },
+				    menuItemStyle: {
+				        rollOverBackgroundColor: '#EFEFEF'
+				    }
+				}
+        	
+        	// WRITE
+        	chart.write("chartdiv");
+        	
+        	setSelectYear(lineChart);
+        });
+        chart.addListener("dataUpdated", zoomChart);
+        
+        // this method is called when chart is first initiated as we listen for "dataUpdated" event
+        function zoomChart() {
+            // different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
+            chart.zoomToIndexes(chartData.length - 40, chartData.length - 1);
+        }
+
+        // changes cursor mode from pan to select
+        function setPanSelect() {
+            var chartCursor = chart.chartCursor;
+
+            if (document.getElementById("rb1").checked) {
+                chartCursor.pan = false;
+                chartCursor.zoomable = true;
+
+            } else {
+                chartCursor.pan = true;
+            }
+            chart.validateNow();
+        }           
+        function setSelectYear(data){
+	        var max = Math.max.apply(Math, data.map(function(o){return o.year;}));
+	        var min = Math.min.apply(Math, data.map(function(o){return o.year;}));
+	        $("#startYear").val(min);
+	        $("#endYear").val(max);
+        
+        }
+        </script>
+        
+<div id="opacity" class="jumbotron">  
+<div id="chartdiv" style="width: 100%; height: 500px;"></div>
+
+<div class="row">
+<div class="col-lg-1">	</div>
+<form action="@routes.Statistics.lineGraphWeight" method="get">	
+	<div class="col-lg-2">
+		<input type="text" id="startYear" class="form-control" name="startYear" placeholder="Fra År">
+	</div>
+	<div class="col-lg-2">			
+		<input type="text" id="endYear" class="form-control" name="endYear" placeholder="Til År">
+	</div>	
+	<div class="col-lg-1">	
+	<input type="submit" style="display: block;" class="btn btn-primary" value="Send" id="submit">
+	</div>
+</form>
+</div>
+</div>
+
+
+}

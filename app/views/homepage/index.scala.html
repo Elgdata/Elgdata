@@ -1,0 +1,370 @@
+@(list: List[List[String]]) @main("Elgdata"){
+
+
+<script src="@routes.Assets.at("javascripts/amcharts/amcharts.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/amcharts/serial.js")" type="text/javascript"></script>
+<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/site.css")">
+
+<body class="elk" background="@routes.Assets.at("images/elk3.jpg")">
+
+<div class="row hero-spacer">
+	
+	
+	
+	<div class="col-md-4">
+	<div id="opacity" class="jumbotron" style="height: 460px;">
+			
+				<h3 id="white" class="elgdata">@list.get(1).get((list.get(1).length)-1)</h3>	
+			
+			
+				<table  id="white" class="table table-condensed" id="table">
+					<tbody>
+						<tr>
+							<td>Skutt elg</td>
+							<th>@list.get(0).get(1)</th>
+						</tr>
+						<tr>
+							<td>Sett elg</td>
+							<th>@list.get(0).get(0)</th>
+						</tr>
+						<tr>
+							<td>Gjennomsnittsvekt (kg)</td>
+							<th>@list.get(0).get(11)</th>
+						</tr>
+						<tr>
+							<td>Totalt slaktervekt (kg)</td>
+							<th>@list.get(0).get(2)</th>
+						</tr>
+						<tr>
+							<td>Beregnet kull</td>
+							<th>@list.get(0).get(3)</th>
+						</tr>
+						<tr>
+							<td>Beregnet bestand</td>
+							<th>@list.get(0).get(4)</th>
+						</tr>
+						<tr>
+							<td>Flest tagger</td>
+							<th>@list.get(0).get(8)</th>
+						</tr>
+						<tr>
+							<td>Størst (kg)</td>
+							<th>@list.get(0).get(10)</th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			</div>
+			
+	
+	
+	<div class="col-md-4">
+	<div id="opacity" class="jumbotron" style="height: 460px;">
+			
+				<h3 id="white" class="elgdata">Totalt</h3>
+			
+			
+				<table  id="white" class="table table-condensed" id="table">
+					<tbody>		
+						<tr>
+							<td>Størst beregnet bestand</td>
+							<th>@list.get(0).get(5)</th>
+						</tr>
+						<tr>
+							<td>Flest skutt elg</td>
+							<th>@list.get(0).get(6)</th>
+						</tr>
+						<tr>
+							<td>Flest tagger</td>
+							<th>@list.get(0).get(7)</th>
+						</tr>
+						<tr>
+							<td>Størst (kg)</td>
+							<th>@list.get(0).get(9)</th>
+						</tr>
+						<tr>
+							<td>Skutt elg</td>
+							<th>@list.get(0).get(12)</th>
+						</tr>
+						<tr>
+							<td>Gjennomsnittsvekt (kg)</td>
+							<th>@list.get(0).get(13)</th>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			</div>
+				
+			
+		</div>
+		
+	
+
+
+
+<div class="row">
+
+
+<div id="white" class="col-md-8">
+<div id="opacity" class="jumbotron" style="height: 330px;">
+	<h2 class="panel-title"><a href="@routes.Statistics.lineGraphWeight()">
+	<legend><span class="elgdata" id="white"><h3>vekt</h3></span></legend> </a></h2>
+<script type="text/javascript">
+  var chartData = generateChartData();
+  var chart = AmCharts.makeChart("chartdiv", {
+    "type": "serial",
+    "theme": "none",
+    "marginLeft": 20,
+    "dataProvider": chartData,
+    "valueAxes": [{
+        "inside": false,     
+        "position": "left",
+        "gridThickness":0,
+        "color":"white",
+        "axisThickness":0
+    }],
+    "graphs": [{
+        "lineColor": "white",
+        "lineThickness": 1.5,
+        "type": "smoothedLine",
+        "valueField": "value"
+        
+    }],   
+    "chartCursor": {
+    	"cursorAlpha":0,
+    	"categoryBalloonEnabled":false,
+        
+    },
+    "categoryField": "year",
+    "categoryAxis": {     
+    	"gridAlpha": 1,
+    	"minorGridEnabled": true,
+        "gridThickness":0,
+        "color":"white",
+        "axisThickness":0
+    }
+});
+
+function generateChartData() {
+    var chartData = [];
+	var xAxis;
+	var yAxis;
+	@for(i <- 0 until list.get(1).length) {
+		xAxis = @list.get(1).get(i)
+		yAxis = @list.get(2).get(i)
+		
+	chartData.push({
+    	value: yAxis,
+    	year: xAxis
+});
+	}	
+	return chartData;
+}
+		
+</script>
+
+
+<div id="chartdiv" style="width: 100%; height: 200px;"></div>
+
+
+</div>
+
+<div id="opacity" class="jumbotron" style="height: 330px;">
+<h2 class="panel-title"><a href="@routes.Statistics.showStackedColumnGraph()">	
+	<legend><span class="elgdata" id="white"><h3>skutt</h3></span></legend> </a></h2>
+
+<script type="text/javascript">
+  
+var chartData = generateChartData();
+var chart = AmCharts.makeChart("chartdiv1", {
+    "type": "serial",
+    "theme": "none",
+    "marginLeft": 20,
+    "dataProvider": chartData,
+    "valueAxes": [{
+        "inside": false,     
+        "position": "left",
+        "gridThickness":0,
+        "color":"white",
+        "axisThickness":0
+    }],
+    "graphs": [{
+    	"showHandOnHover":true,
+        "lineColor": "white",
+        "lineThickness": 1.5,
+        "type": "smoothedLine",
+        "valueField": "value"
+        
+    }],  
+    "chartCursor": {
+    	"cursorAlpha":0,
+    	"categoryBalloonEnabled":false,
+        
+    },
+    "categoryField": "year",
+    "categoryAxis": {     
+    	"gridAlpha": 1,
+    	"minorGridEnabled": true,
+        "gridThickness":0,
+        "color":"white",
+        "axisThickness":0
+    }
+});
+
+function generateChartData() {
+    var chartData = [];
+	var xAxis;
+	var yAxis;
+	@for(i <- 0 until list.get(1).length) {
+		xAxis = @list.get(1).get(i)
+		yAxis = @list.get(3).get(i)
+		
+	chartData.push({
+    	value: yAxis,
+    	year: xAxis
+});
+	}
+	return chartData;
+}
+		
+</script>
+
+
+<div id="chartdiv1" style="width: 100%; height: 200px;"></div>
+
+</div>
+
+
+<div id="opacity" class="jumbotron" style="height: 330px;">
+<h2 class="panel-title"><a href="@routes.Statistics.showCohortWeight()">
+	<legend><span class="elgdata" id="white"><h3>kull</h3></span></legend> </a></h2>
+
+<script type="text/javascript">
+  
+var chartData = generateChartData();
+var chart = AmCharts.makeChart("chartdiv2", {
+    "type": "serial",
+    "theme": "none",
+    "marginLeft": 20,
+    "dataProvider": chartData,
+    "valueAxes": [{
+        "inside": false,     
+        "position": "left",
+        "gridThickness":0,
+        "color":"white",
+        "axisThickness":0
+    }],
+    "graphs": [{
+        "lineColor": "white",
+        "lineThickness": 1.5,
+        "type": "smoothedLine",
+        "valueField": "value"
+        
+    }], 
+    "chartCursor": {
+    	"cursorAlpha":0,
+    	"categoryBalloonEnabled":false,
+        
+    },
+    "categoryField": "year",
+    "categoryAxis": {     
+    	"gridAlpha": 1,
+    	"minorGridEnabled": true,
+        "gridThickness":0,
+        "color":"white",
+        "axisThickness":0
+    }
+});
+
+function generateChartData() {
+    var chartData = [];
+	var xAxis;
+	var yAxis;
+	@for(i <- 0 until list.get(7).length) {
+		xAxis = @list.get(7).get(i)
+		yAxis = @list.get(6).get(i)
+		
+	chartData.push({
+    	value: yAxis,
+    	year: xAxis
+});
+	}
+	return chartData;
+}
+		
+</script>
+
+
+<div id="chartdiv2" style="width: 100%; height: 200px;"></div>
+
+</div>
+
+
+<div id="opacity" class="jumbotron" style="height: 330px;">
+<h2 class="panel-title"><a href="@routes.Statistics.getPopulation()">
+	<legend><span class="elgdata" id="white"><h3>bestand</h3></span></legend> </a></h2>
+
+
+<script type="text/javascript">
+  
+var chartData = generateChartData();
+var chart = AmCharts.makeChart("chartdiv3", {
+    "type": "serial",
+    "theme": "none",
+    "marginLeft": 20,
+    "dataProvider": chartData,
+    "valueAxes": [{
+        "inside": false,     
+        "position": "left",
+        "gridThickness":0,
+        "color":"white",
+        "axisThickness":0
+    }],
+    "graphs": [{
+        "lineColor": "white",
+        "lineThickness": 1.5,
+        "type": "smoothedLine",
+        "valueField": "value"
+        
+    }],  
+    "chartCursor": {
+    	"cursorAlpha":0,
+    	"categoryBalloonEnabled":false
+        
+    },
+    "categoryField": "year",
+    "categoryAxis": {     
+    	"gridAlpha": 1,
+    	"minorGridEnabled": true,
+        "gridThickness":0,
+        "color":"white",
+        "axisThickness":0
+    }
+});
+
+function generateChartData() {
+    var chartData = [];
+	var xAxis;
+	var yAxis;
+	@for(i <- 0 until list.get(5).length) {
+		xAxis = @list.get(5).get(i)
+		yAxis = @list.get(4).get(i)
+		
+	chartData.push({
+    	value: yAxis,
+    	year: xAxis
+});
+	}
+	return chartData;
+}
+		
+</script>
+
+
+<div id="chartdiv3" style="width: 100%; height: 200px;"></div>
+</div>
+</div>
+</div>
+
+
+}

@@ -1,0 +1,95 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET    /                              controllers.Homepage.index()
+GET    /howtocsv                      controllers.Homepage.showcsv()
+GET    /CSVmal                        controllers.Homepage.csvMal()
+
+#--- File IO ----
+GET    /upload                        controllers.FileIO.upload()
+GET    /checkerror                    controllers.FileIO.sendData()
+GET    /uploadfile                    controllers.FileIO.GetColumnOrder(data: java.util.List[Integer])
+POST   /uploadfile                    controllers.FileIO.uploadfile()
+GET    /loggingdata                   controllers.FileIO.showLoggingData()
+# Seen Elk
+GET    /uploadseenelk                 controllers.FileIO.uploadSeenElk()
+POST   /uploadseenelk                 controllers.FileIO.uploadSeenElkFile()
+
+# Weather
+GET    /uploadweather                 controllers.FileIO.uploadWeather()
+POST   /uploadweather                 controllers.FileIO.uploadWeatherFile()
+# ---------------
+
+# Table IO
+GET    /showelk                       controllers.TableIO.showelk()
+GET    /newelk                        controllers.TableIO.addNewElk()
+POST   /newelk                        controllers.TableIO.submitNewElk()
+GET    /editelk/:elkid                controllers.TableIO.editElk(elkid: Long)
+POST   /submitdElk                    controllers.TableIO.submitEditedElk()
+
+# Display statistics
+GET    /showUserDefinedGraph          controllers.UserDefinedGraph.showUserDefinedGraph(countForms: Integer, countWeather: Integer, countLogging: Integer) 
+GET    /editUserDefinedGraph          controllers.UserDefinedGraph.edit()
+GET    /stackedcolumn                 controllers.Statistics.showStackedColumnGraph()
+GET    /linegraphweight               controllers.Statistics.lineGraphWeight()
+GET    /weather                       controllers.Statistics.weatherGraph()
+GET    /cohort                        controllers.Statistics.showCohortWeight()
+GET	   /population					  controllers.Statistics.getPopulation()
+
+# --- Save UserDefinedGraph ---
+GET    /showsavedgraphs               controllers.SavedGraphs.showGraphs()
+POST   /submitNewCategory             controllers.SavedGraphs.submitNewCategory()
+POST   /submitEditedGraph             controllers.SavedGraphs.submitEditedGraph()
+GET    /editgraph/:graphid            controllers.SavedGraphs.editGraphForm(graphid: Integer)
+
+# --- Backup ---
+GET    /backup                        controllers.Backup.showBackupConsole()
+# ---------------
+# --------- Javascript Routes ------------
+# --- Saved Graphs ---
+GET    /deletegraph                   controllers.SavedGraphs.deleteGraph(id: String)
+GET    /deleteCategory                controllers.SavedGraphs.deleteCategory(id: String)
+GET    /submitNewGraph                controllers.SavedGraphs.submitNewGraph()
+
+# --- TableIO ---
+GET    /deleteelk                     controllers.TableIO.deleteElk(id: String)
+# ---------------
+
+# --- Statistics ---
+GET    /newCohortWeight               controllers.Statistics.newCohortWeight(years: String)
+# ---------------
+
+# --- FileIO ---
+POST   /submitNewLoggingData          controllers.FileIO.submitNewLoggingData()
+GET    /deleteLoggingData             controllers.FileIO.deleteLoggingData(id: String)
+# ---------------
+
+# --- Backup ---
+GET    /createNewBackup               controllers.Backup.createDatabaseDump()
+GET    /restoreDatabaseFromBackup     controllers.Backup.restoreDatabase(filePath: String)
+GET    /deleteBackup                  controllers.Backup.deleteDatabaseFile(filePath: String) 
+GET    /uploadBackupFile              controllers.Backup.uploadBackupFile() 
+POST   /submitBackupFile              controllers.Backup.submitBackupFile()
+
+# ---------------
+
+# Security
+GET    /security/showusers            controllers.Security.showUsers()
+GET    /security/login                controllers.Security.loginForm()
+POST   /security/submitLogin          controllers.Security.submitLoginForm()
+GET    /security/register             controllers.Security.registerUserForm()
+POST   /security/submitRegisterForm   controllers.Security.submitRegisterForm()
+GET    /security/logout               controllers.Security.logout()
+GET    /security/deleteUser           controllers.Security.deleteUser(id: String)
+
+# Display uploaderrors
+GET    /uploaderror                   controllers.FileIO.uploadError(message: String)
+GET    /checkerror                    controllers.FileIO.checkError(message: java.util.List[String], row: java.util.List[String])
+GET    /message                       controllers.FileIO.message(message: String, time: Integer)				
+
+# Add Javascript method
+GET    /assets/javascripts/routes     controllers.JavascriptRoutes.javascriptRoutes()
+# Map static resources from the /public folder to the /assets URL path
+GET    /assets/*file                  controllers.Assets.at(path="/public", file)

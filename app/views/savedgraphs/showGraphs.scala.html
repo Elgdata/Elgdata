@@ -1,0 +1,113 @@
+@(title: String, categories: List[UserGraphCategory], graphs: List[UserGraph], userGraphForm: Form[UserGraph], userGraphCategoryForm: Form[UserGraphCategory]) 
+@import helper._
+@main(title){
+
+<script type="text/javascript" src="@routes.Assets.at("jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js")"></script>
+<link rel="stylesheet" href="@routes.Assets.at("jquery-ui-1.10.4.custom/css/base/jquery.ui.all.css")" type="text/css"/>
+
+<br>
+<div class="row">
+	<div class="col-md-12">
+		<div id="tabs">
+			<ul id="category-tabs">
+			<!-- Categorie tabs-->
+			@for(category <- categories ){
+				<li id="category-list-@category.id"><a href="#category-@category.id">@category.name</a></li>
+				
+			}
+			@if(session.get("username") != null){
+				<li><a href="#create-category"><span href="test" class="glyphicon glyphicon-plus" style="color:#5CB85C;"></span></li>
+			}
+			<!-- <li><a href="#create-category"><a href="#" id="deleteGraph" class="glyphicon glyphicon-plus" data-role="button" onClick="deleteGraph()" style="color:#D9534F;"></a>Ny</a></li> -->
+			</ul>
+			<!-- Categori tab info -->
+			
+			<div class="row" id="category-tab-content">
+					@for(category <- categories){		
+						<div id="category-@category.id">
+							@for(graph <- graphs){
+								@if(category.id == graph.category.id){																	
+									<div class="col-sm-6 col-lg-6 col-md-6" id="graf-@graph.id">									
+										<h3><a class="cozoka" href="@graph.url">@graph.name</a></h3>
+										<legend></legend>
+										<h5>@graph.shortInfo</h5>
+										@if(session.get("username") != null){
+											<div class="row">
+											<div class="col-md-2">
+											<form action="@routes.SavedGraphs.editGraphForm(graph.id)">
+   										 		<input type="submit" value="Endre" class="btn btn-xs btn-primary"  href="@routes.TableIO.addNewElk()">
+											</form>
+											</div>
+											<div class="col-md-2">
+											<input id="deleteGraph" class="btn btn-xs btn-danger col-md-9" value="Slett" onclick="deleteGraph(@graph.id)" />
+											</div>
+											</div>
+											
+											}									
+									</div>
+								}
+							}
+							
+							<div class="row hero-spacer">
+					<div class="col-sm-12 hero-spacer">
+							@if(session.get("username") != null){
+								<input id="deleteCategory" class="btn btn-xs btn-danger" value="Slett kategori" onclick="deleteCategory(@category.id)" />
+								
+							}
+							</div>
+			</div>
+						</div>
+					}
+					
+					</div>
+				@if(session.get("username") != null){
+					<div id="create-category">
+						<a href="#" id="createGraph" class="glyphicon glyphicon-plus" data-role="button" onClick="createGraph()" > Graf</a>
+						<br>
+						<a href="#" id="createCategory" class="glyphicon glyphicon-plus" data-role="button" onClick="createCategory()" > Kategori</a>
+					</div>
+				}			
+			
+		</div>
+	</div>
+</div>
+<div id="delete-dialog" title="Slett" style="display: none;">
+<p>Er du sikker du vil slette denne?</p>
+</div>
+<div id ="result"> 
+</div>
+<div id="create-graph-dialog" title="Ny graf" style="display: none;">
+	<div class="row">
+    	<div class="col-md-12 portfolio-item">    
+			@form(action = routes.SavedGraphs.submitNewGraph(), 'id -> "create-graph-form") { 			
+				@inputText(userGraphForm("name"),'placeholder -> "Navn", 'class -> "form-control", '_label ->"")
+				@inputText(userGraphForm("url"),'placeholder -> "Url", 'class -> "form-control", '_label ->"",'_showConstraints -> false)
+				@textarea(userGraphForm("shortInfo"),'placeholder -> "Info", 'class -> "form-control", '_label ->"")			
+				@select(userGraphForm("category.id"),options(UserGraphCategory.options), '_default -> "-- Velg Kategori --",'class -> "form-control",'_label -> "",'_showConstraints -> false
+				)
+			}
+		</div>
+	</div>
+		
+</div>
+<div id="create-category-dialog" title="Ny kategori" style="display: none;">
+	<div class="row">
+		<div class="col-md-12 portfolio-item">    
+			@form(action = routes.SavedGraphs.submitNewCategory(), 'id -> "create-category-form") { 			
+				@inputText(userGraphCategoryForm("name"),'placeholder -> "Navn", 'class -> "form-control", '_label ->"")
+			}
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="@routes.JavascriptRoutes.javascriptRoutes"></script>
+<script type="text/javascript" src="@routes.Assets.at("javascripts/savedgraphs/crud.js")"></script>
+<script>
+$(function() {
+	// Create tabs
+	$("#tabs").tabs();
+
+});
+</script>
+			 
+}

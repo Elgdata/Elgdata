@@ -1,0 +1,857 @@
+@(title: String, listHuntingField: List[HuntingField], listSex:List[Sex], listTick: List[Tick], listDeerLice: List[DeerLice]) @main(title){
+<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/site.css")">
+<script type="text/javascript" src="@routes.Assets.at("jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js")"></script>
+<link rel="stylesheet" href="@routes.Assets.at("jquery-ui-1.10.4.custom/css/base/jquery.ui.all.css")" type="text/css"/>
+	
+<script type="text/javascript">
+	(function($) {
+		$countForms = 1;
+		$( document ).tooltip();
+		$.fn.addForms = function() {
+			if ($countForms == 1) {
+				var properties = 
+				"<div id=\"opacity\" class=\"jumbotron hero-spacer\">"					
+				+"<div class=\"row\">"					
+				+" <div class=\"col-md-2\" >"
+				+  "<input type=\"button\" id=\"deleteForm\" class=\"btn btn-danger\" value=\"X\"/>"
+				+"</div>"
+				+" <div class=\"col-md-9\" >"
+				+"<h style=\"font-size:2em\" class=\"white elgdata\"> Graf</h>"		
+				+"</div>"
+				+"</div>"
+				+"<legend></legend>"	
+				+"<div class=\"row\">"
+				+" <div class=\"col-md-10\" >"
+				+" <input  type="+"text"+" class=\"form-control\" placeholder="+"Tittel name="+"graphName id="+"graphName> "
+				+"</div>"
+				+" <div class=\"col-md-1\" >"
+				+"<span title=\"Forklar hva grafen du skal lage forteller oss. Om ingenting blir skrevet her vises det du velger som Y-akse som standard.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+				+"</div>"
+				+"</div>"
+				+"<br>"
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "     <select required name="+"yAxis id="+"Y"+" class="+"form-control"+" onclick="+"restrictions(this,"+$countForms+")"+">"
+				+ "	   	<option value="+""+">Sett Y-aksen</option>"
+				+ "	   	<option value="+"Vekt"+">Vekt</option>"
+				+ "	   	<option value="+"Alder"+">Alder</option>"
+				+ "	   	<option value="+"SettElg"+">Sett elg</option>"
+				+ "	   	<option value="+"Bestand"+">Bestand</option>"
+				+ "		</select>"
+				+"</div>"
+				+" <div class=\"col-md-1\" >"
+				+"<span title=\"Obligatorisk valg. Velg hva du vil se/vise på Y-aksen. Mrk: 'Sett elg' og 'Bestand' kan ikke kombineres med noe annet valg, unntatt begrensninger på Y-aksen.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+				+"</div>"
+				+"</div>"
+				+ "<br> "
+
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "     <td><select name="+"orderBy"+" id="+"order"+ " class="+"form-control"+" onclick="+"additionalSelector(this) "+"</td>"
+				+ "	   	<td><option value="+""+">Sorter etter</option>"
+				+ "	   	<td><option value="+"År"+">År</option>"
+				+ "	   	<td><option value="+"Tagger"+">Tagger</option>"
+				+ "	   	<td><option value="+"Vekt"+">Vekt</option>"
+				+ "	   	<td><option value="+"Alder"+">Alder</option>"
+				+ "	   	<td><option value="+"Flått"+">Flått</option>"
+				+ "	   	<td><option value="+"Hjortelus"+">Hjortelus</option>"
+				+ "	   	<td><option value="+"Tvilling"+">Tvilling</option>"
+				+ "	   	<td><option value="+"Kalv"+">Kalv</option>"
+				+ "		<td></select>"
+				+"</div>"
+				+" <div class=\"col-md-1\" >"
+				+"<span title=\"Her kan du velge om du vil at dataene skal sorteres. Eksempel; antall tagger (stigende eller synkende).\" class=\"glyphicon glyphicon-question-sign\"></span>"
+				+"</div>"
+				+"</div>"
+				
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "     <td><select name="+"orderByParam style="+"display:none"+" class="+"form-control"+" id="+"orderParam"+" ></td>"
+				+ "	   	<td><option value="+""+">Velg</option>"
+				+ "	   	<td><option value="+"Stigende"+">Stigende</option>"
+				+ "	   	<td><option value="+"Synkende"+">Synkende</option>"
+				+ "		<td></select>"
+				+"</div>"
+				+"</div>"
+				
+				+ "<br>"
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "     <td><select name="+"xAxisCondition"+" id="+"xCon"+ " class="+"form-control"+" onclick="+"additionalSelector(this) "+"</td>"
+				+ "	   	<td><option value="+""+">Betingelse X</option>"
+				+ "	   	<td><option value="+"År"+">År</option>"
+				+ "		<td></select>"
+				+"</div>"
+				+" <div class=\"col-md-1\" >"
+				+"<span title=\"Her kan du sette en begrensning på X-aksen. Eksempel; vis elg skutt etter 2006.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+				+"</div>"
+				+"</div>"
+				
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "		<td><select id="+"opX"+" style="+"display:none"+ " class="+"form-control"+" name="+"operatorsX"+"></td>"
+				+ "	   	<td><option value="+"Eq selected>=</option>"
+				+ "	   	<td><option value="+"Neq"+">&#8800;</option>"
+				+ "	   	<td><option value="+"Gt"+">></option>"
+				+ "	   	<td><option value="+"Lt"+"><</option>"
+				+ "		<td></select>"
+				+"</div>"
+				+"</div>"
+				
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "		<input type="+"text "+"size="+"4"+" style="+"display:none"+" name="+"textAreaX id="+"txtInpX"+">"
+				+"</div>"
+				+" <div class=\"col-md-1\" >"
+				+"<span id="+"helpX style=\"display:none\" title=\"Om du vil se elg skutt etter 2006, skriver du '2006' i tekstfeltet.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+				+"</div>"
+				+"</div>"
+				+ "<br>"
+				
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "     <td><select name="+"yAxisCondition"+" id="+"yCon"+$countForms+" class="+"form-control"+" onclick="+"additionalSelector(this) "+"</td>"
+				+ "	   	<td><option value="+""+">Betingelse Y</option>"
+				+ "	   	<td><option value="+"Tagger"+">Tagger</option>"
+				+ "	   	<td><option value="+"Vekt"+">Vekt</option>"
+				+ "	   	<td><option value="+"Alder"+">Alder</option>"
+				+ "	   	<td><option value="+"Kjønn"+">Kjønn</option>"
+				+ "	   	<td><option value="+"Flått"+">Flått</option>"
+				+ "	   	<td><option value="+"Hjortelus"+">Hjortelus</option>"
+				+ "	   	<td><option value="+"Tvilling"+">Tvilling</option>"
+				+ "	   	<td><option value="+"Kalv"+">Kalv</option>"
+				+ "	   	<td><option value="+"Område"+">Område</option>"
+				+ "		<td></select>"
+				+"</div>"
+				+" <div class=\"col-md-1\" >"
+				+"<span title=\"Her kan du sette en begrensning på Y-aksen. Eksempel; vis elg hvor alderen er større enn 4 år.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+				+"</div>"
+				+"</div>"
+				
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "		<td><select id="+"yCon"+$countForms+"opY"+" class="+"form-control"+" style="+"display:none"+ " name="+"operatorsY"+"></td>"
+				+ "	   	<td><option value="+"Eq selected>=</option>"
+				+ "	   	<td><option value="+"Neq"+">&#8800;</option>"
+				+ "	   	<td><option value="+"Gt"+">></option>"
+				+ "	   	<td><option value="+"Lt"+"><</option>"
+				+ "		<td></select>"
+				+"</div>"
+				+"</div>"
+				
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "		<input type="+"text "+"size="+"4"+" style="+"display:none"+" name="+"textAreaY id="+"yCon"+$countForms+"txtInpY"+">"
+				+"</div>"
+				+" <div class=\"col-md-1\" >"
+				+"<span id="+"yCon"+$countForms+"helpY style=\"display:none\" title=\"Om du vil at alderen til elgene vist i grafen skal være større en f.eks 4 år, skriver du '4' i tekstfeltet.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+				+"</div>"
+				+"</div>"
+				
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "		<td><select id="+"yCon"+$countForms+"Sex"+" class="+"form-control"+" style="+"display:none"+ " name="+"yAxisConditionSex"+"></td>"
+				+ "	   	<td><option value="+""+">Velg</option>"
+				+ "			@for(sex <- listSex){"
+				+ "			<td><option value="+"@sex.id"+">@Html(sex.toString())</option>" +"}"
+				+ "		<td></select>"
+				
+				+ "		<td><select id="+"yCon"+$countForms+"Field"+" class="+"form-control"+" style="+"display:none"+ " name="+"yAxisConditionField"+"></td>"
+				+ "	   	<td><option value="+""+">Velg</option>"
+				+ "			@for(field <- listHuntingField){"
+				+ "			<td><option value="+"@field.id"+">@Html(field.name)</option>" +"}"
+				+ "		<td></select>"
+				
+				+ "		<td><select id="+"yCon"+$countForms+"Tick"+" class="+"form-control"+" style="+"display:none"+ " name="+"yAxisConditionTick"+"></td>"
+				+ "	   	<td><option value="+""+">Velg</option>"
+				+ "			@for(tick <- listTick){"
+				+ "			<td><option value="+"@tick.id"+">@Html(tick.sum)</option>" +"}"
+				+ "		<td></select>"
+				
+				+ "		<td><select id="+"yCon"+$countForms+"DeerLice"+" class="+"form-control"+" style="+"display:none"+ " name="+"yAxisConditionDeerLice"+"></td>"
+				+ "	   	<td><option value="+""+">Velg</option>"
+				+ "			@for(deerLice <- listDeerLice){"
+				+ "			<td><option value="+"@deerLice.id"+">@Html(deerLice.sum)</option>" +"}"
+				+ "		<td></select>"
+				+"</div>"
+				+"</div>"
+				
+				+ "		<input type="+"radio"+" checked name="+"option1"+" style="+"display:none"+" value="+""+">" 
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "		<input  type="+"radio"+" id="+"option1"+" name="+"option1 onclick="+"disableDev(this,"+$countForms+")"+" value="+"avg"+"> <p4 class=\"white\">Gjennomsnitt</p4>"
+				+"</div>"
+				+" <div class=\"col-md-1\" >"
+				+"<span title=\"Huk av denne om du vil se gjennomsnittet for dataene du har valgt.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+				+"</div>"
+				+"</div>"
+				
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "		<input type="+"radio"+" id="+"option1"+" name="+"option1 onclick="+"disableDev(this,"+$countForms+")"+" value="+"med"+"> <p4 class=\"white\">Median</p4>"
+				+"</div>"
+				+" <div class=\"col-md-1\" >"
+				+"<span title=\"Huk av denne om du vil se median for dataene du har valgt.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+				+"</div>"
+				+"</div>"
+				
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "		<input type="+"radio"+" id="+"option1"+" name="+"option1 onchange="+"disableDev(this,"+$countForms+")"+" value="+"count"+"> <p4 class=\"white\">Antall</p4>"
+				+"</div>"
+				+" <div class=\"col-md-1\" >"
+				+"<span title=\"Antall er en opptelling av elg avgrenset av om du har lagt noen begrensninger. Det betyr ingenting om du har valgt 'Alder' eller 'Vekt' for Y-akse. Kan ikke kombineres med standardavvik.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+				+"</div>"
+				+"</div>"
+				
+				+ "<br> "
+				+"<div class=\"row\">"
+				+"<div class=\"col-md-10\" >"
+				+ "		<input type="+"checkbox"+" id="+"dev1"+" name="+"dev1 value="+"dev"+"> <p4 class=\"white\">Standardavvik</p4>"
+				+"</div>"
+				+" <div class=\"col-md-1\" >"
+				+"<span title=\"Standardavvik kan kun kombineres med gjennomsnitt eller median. Huk av gjennomsnitt eller median i tillegg til denne.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+				+"</div>"
+				+"</div>"
+				
+				+ "</tr>"
+				+"</div>"
+			
+			
+										
+						;
+						
+						
+			} else {
+				var properties =
+					
+					"<div id=\"opacity\" class=\"jumbotron hero-spacer\">"
+					+"<div class=\"row\">"
+					+" <div class=\"col-md-2\" >"
+					+  "<input type=\"button\" id=\"deleteForm\" class=\"btn btn-danger	\" value=\"X\"/>"
+					+"</div>"
+					+" <div class=\"col-md-8\" >"
+					+" <input  type="+"text"+" class=\"form-control\" placeholder="+"Tittel name="+"graphName id="+"grapName"+"> "
+					+"</div>"
+					+" <div class=\"col-md-1\" >"
+					+"<span title=\"Forklar hva grafen du skal lage forteller oss. Om ingenting blir skrevet her vises det du velger som Y-akse som standard.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+					+"</div>"
+					+"</div>"
+					+ "<br> "
+					
+					+"<div class=\"row\">"
+					+"<div class=\"col-md-10\" >"
+					+ "     <td><select required name="+"yAxis id="+"Y"+" class="+"form-control"+" onclick="+"restrictions(this,"+$countForms+")"+"></td>"
+					+ "	   	<td><option value="+""+">Y</option>"
+					+ "	   	<td><option value="+"Vekt"+">Vekt</option>"
+					+ "	   	<td><option value="+"Alder"+">Alder</option>"
+					+ "	   	<td><option value="+"SettElg"+">Sett elg</option>"
+					+ "	   	<td><option value="+"Bestand"+">Bestand</option>"
+					+ "		<td></select>"
+					+"</div>"
+					+" <div class=\"col-md-1\" >"
+					+"<span title=\"Obligatorisk valg. Velg hva du vil se/vise på Y-aksen. Mrk: 'Sett elg' og 'Bestand' kan ikke kombineres med noe annet valg, unntatt begrensninger på Y-aksen.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+					+"</div>"
+					+"</div>"
+					+ "<br> "
+					
+					+"<div class=\"row\">"
+					+"<div class=\"col-md-10\" >"
+					+ "     <td><select name="+"yAxisCondition"+" id="+"yCon"+$countForms+" class="+"form-control"+" onclick="+"additionalSelector(this) "+"</td>"
+					+ "	   	<td><option value="+""+">Betingelse Y</option>"
+					+ "	   	<td><option value="+"Tagger"+">Tagger</option>"
+					+ "	   	<td><option value="+"Vekt"+">Vekt</option>"
+					+ "	   	<td><option value="+"Alder"+">Alder</option>"
+					+ "	   	<td><option value="+"Kjønn"+">Kjønn</option>"
+					+ "	   	<td><option value="+"Flått"+">Flått</option>"
+					+ "	   	<td><option value="+"Hjortelus"+">Hjortelus</option>"
+					+ "	   	<td><option value="+"Tvilling"+">Tvilling</option>"
+					+ "	   	<td><option value="+"Kalv"+">Kalv</option>"
+					+ "	   	<td><option value="+"Område"+">Område</option>"
+					+ "		<td></select>"
+					+"</div>"
+					+" <div class=\"col-md-1\" >"
+					+"<span title=\"Her kan du sette en begrensning på Y-aksen. Eksempel; vis elg hvor alderen er større enn 4 år.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+					+"</div>"
+					+"</div>"
+					+ "<br> "
+					
+					+"<div class=\"row\">"
+					+"<div class=\"col-md-10\" >"
+					+ "		<td><select id="+"yCon"+$countForms+"opY"+" style="+"display:none"+ " class="+"form-control"+" name="+"operatorsY"+"></td>"
+					+ "	   	<td><option value="+"Eq selected>=</option>"
+					+ "	   	<td><option value="+"Neq"+">&#8800;</option>"
+					+ "	   	<td><option value="+"Gt"+">></option>"
+					+ "	   	<td><option value="+"Lt"+"><</option>"
+					+ "		<td></select>"
+					+"</div>"
+					+"</div>"
+
+					+"<div class=\"row\">"
+					+"<div class=\"col-md-10\" >"
+					+ "		<input type="+"text "+"size="+"4"+" style="+"display:none"+" name="+"textAreaY id="+"yCon"+$countForms+"txtInpY"+">"
+					+"</div>"
+					+" <div class=\"col-md-1\" >"
+					+"<span id="+"yCon"+$countForms+"helpY style=\"display:none\" title=\"Om du vil at alderen til elgene vist i grafen skal være større en f.eks 4 år, skriver du '4' i tekstfeltet.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+					+"</div>"
+					+"</div>"
+					
+					+"<div class=\"row\">"
+					+"<div class=\"col-md-10\" >"
+					+ "		<td><select id="+"yCon"+$countForms+"Sex"+" class="+"form-control"+" style="+"display:none"+ " name="+"yAxisConditionSex"+"></td>"
+					+ "	   	<td><option value="+""+">Velg</option>"
+					+ "			@for(sex <- listSex){"
+					+ "			<td><option value="+"@sex.id"+">@Html(sex.toString())</option>" +"}"
+					+ "		<td></select>"
+					
+					+ "		<td><select id="+"yCon"+$countForms+"Field"+" class="+"form-control"+" style="+"display:none"+ " name="+"yAxisConditionField"+"></td>"
+					+ "	   	<td><option value="+""+">Velg</option>"
+					+ "			@for(field <- listHuntingField){"
+					+ "			<td><option value="+"@field.id"+">@Html(field.name)</option>" +"}"
+					+ "		<td></select>"
+					
+					+ "		<td><select id="+"yCon"+$countForms+"Tick"+" class="+"form-control"+" style="+"display:none"+ " name="+"yAxisConditionTick"+"></td>"
+					+ "	   	<td><option value="+""+">Velg</option>"
+					+ "			@for(tick <- listTick){"
+					+ "			<td><option value="+"@tick.id"+">@Html(tick.sum)</option>" +"}"
+					+ "		<td></select>"
+					
+					+ "		<td><select id="+"yCon"+$countForms+"DeerLice"+" class="+"form-control"+" style="+"display:none"+ " name="+"yAxisConditionDeerLice"+"></td>"
+					+ "	   	<td><option value="+""+">Velg</option>"
+					+ "			@for(deerLice <- listDeerLice){"
+					+ "			<td><option value="+"@deerLice.id"+">@Html(deerLice.sum)</option>" +"}"
+					+ "		<td></select>"
+					+"</div>"
+					+"</div>"
+					
+					+ "		<input type="+"radio"+" checked name="+"option"+$countForms+" style="+"display:none"+" value="+""+">" 
+					+"<div class=\"row\">"
+					+"<div class=\"col-md-10\" >"
+					+ "		<input  type="+"radio"+" id="+"option"+$countForms+" name="+"option"+$countForms+" onclick="+"disableDev(this,"+$countForms+")"+" value="+"avg"+"> <p4 class=\"white\">Gjennomsnitt</p4>"
+					+"</div>"
+					+" <div class=\"col-md-1\" >"
+					+"<span title=\"Huk av denne om du vil se gjennomsnittet for dataene du har valgt.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+					+"</div>"
+					+"</div>"
+					
+					+"<div class=\"row\">"
+					+"<div class=\"col-md-10\" >"
+					+ "		<input type="+"radio"+" id="+"option"+$countForms+" name="+"option"+$countForms+" onclick="+"disableDev(this,"+$countForms+")"+" value="+"med"+"> <p4 class=\"white\">Median</p4>"
+					+"</div>"
+					+" <div class=\"col-md-1\" >"
+					+"<span title=\"Huk av denne om du vil se median for dataene du har valgt.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+					+"</div>"
+					+"</div>"
+					
+					+"<div class=\"row\">"
+					+"<div class=\"col-md-10\" >"
+					+ "		<input type="+"radio"+" id="+"option"+$countForms+" name="+"option"+$countForms+" onchange="+"disableDev(this,"+$countForms+")"+" value="+"count"+"> <p4 class=\"white\">Antall</p4>"
+					+"</div>"
+					+" <div class=\"col-md-1\" >"
+					+"<span title=\"Antall er en opptelling av elg avgrenset av om du har lagt noen begrensninger. Det betyr ingenting om du har valgt 'Alder' eller 'Vekt' for Y-akse. Kan ikke kombineres med standardavvik.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+					+"</div>"
+					+"</div>"
+					
+					+ "<br> "
+					+"<div class=\"row\">"
+					+"<div class=\"col-md-10\" >"
+					+ "		<input type="+"checkbox"+" id="+"dev"+$countForms+" name="+"dev"+$countForms+" value="+"dev"+"> <p4 class=\"white\">Standardavvik</p4>"
+					+"</div>"
+					+" <div class=\"col-md-1\" >"
+					+"<span title=\"Standardavvik kan kun kombineres med gjennomsnitt eller median. Huk av gjennomsnitt eller median i tillegg til denne.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+					+"</div>"
+					+"</div>"
+					+ "</tr>"
+				+"</div>";
+			}
+			$countForms++;
+			$("#countForms").val($countForms - 1);
+			properties = $("<div>" + properties + "</div>");
+			$("#deleteForm", $(properties)).click(function() {
+				$(this).parent().parent().parent().remove();
+				$countForms--;
+				if($countForms==1){
+					document.getElementById("submit").style.display = "none";
+				}
+				$("#countForms").val($countForms - 1);
+				$(this).parent().update();
+			});
+
+			$(this).append(properties);
+
+		};
+	})(jQuery);
+	
+	(function($) {
+		$countWeather = 1;
+		$.fn.addWeather = function() {
+				var weather = 
+					"<div id=\"opacity\" class=\"jumbotron hero-spacer\">"					
+					+"<div class=\"row\">"					
+					+" <div class=\"col-md-2\" >"
+					+  "<input type=\"button\" id=\"deleteForm\" class=\"btn btn-danger\" value=\"X\"/>"
+					+"</div>"
+					+" <div class=\"col-md-9\" >"
+					+"<h style=\"font-size:2em\" class=\"white elgdata\">Værdata</h>"		
+					+"</div>"
+					+"</div>"
+					+"<legend></legend>"
+					+"<br>"	
+					+"<div class=\"row\">"
+					+"<div class=\"col-md-10\" >"
+						+"<div class=\"left-inner-addon\">"
+					   	+ "<i class=\"glyphicon glyphicon-calendar\"></i>"
+					  	+ " <input type=\"text\" name=\"fromWeatherUser\" id="+"fromWeatherUser"+$countWeather+" placeholder=\"Fra dato\" class=\"form-control fromWeatherUser\"/>"
+					  	+"</div>"
+					  	+"</div>"
+						+" <div class=\"col-md-1\" >"
+					  	+"<span title=\"Fra- og til dato avgrenser en periode du vil se data fra. Merk at du ikke velger år. Avgrensningene du gjør her gjelder for alle år som ligger i databasen.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+					  	+"</div>"
+					  	+"</div>"
+					  	
+					  	+"<div class=\"row\">"
+						+"<div class=\"col-md-10\" >"
+						+"<div class=\"left-inner-addon\">"
+					   	+ "<i class=\"glyphicon glyphicon-calendar\"></i>"
+					  	+ " <input type=\"text\" name=\"toWeatherUser\" id="+"toWeatherUser"+$countWeather+" placeholder=\"Til dato\" class=\"form-control toWeatherUser\"/>"
+					  	+"</div>"
+					  	+"</div>"
+					  	+"</div>"
+					 
+						+"<br>"	
+						+"<div class=\"row\">"
+						+"<div class=\"col-md-10\" >"
+						+ "     <td><select class=\"form-control\" name="+"weatherCondition id="+"wCon"+$countWeather+" onclick="+"additionalSelectorWeather(this) "+"</td>"
+						+ "	   	<td><option value="+""+">Værbetingelse</option>"
+						+ "	   	<td><option value="+"Temperatur"+">Temperatur</option>"
+						+ "	   	<td><option value="+"Snødybde"+">Snødybde</option>"
+						+ "		<td></select>"
+						+"</div>"
+						+" <div class=\"col-md-1\" >"
+						+"<span title=\"Her kan du sette en begrensning på været. Eksempel; vis antall dager hvor temperaturen er større enn 15 grader.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+						+"</div>"
+					  	+"</div>"
+						
+						+"<br>"	
+						+"<div class=\"row\">"
+						+"<div class=\"col-md-5\" >"
+						+ "		<td><select id="+"wCon"+$countWeather+"opW"+" class="+"form-control style="+"display:none"+ " name="+"operatorsWeather"+"></td>"
+						+ "	   	<td><option value="+"Eq selected>=</option>"
+						+ "	   	<td><option value="+"Neq"+">&#8800;</option>"
+						+ "	   	<td><option value="+"Gt"+">></option>"
+						+ "	   	<td><option value="+"Lt"+"><</option>"
+						+ "		<td></select>"
+						+"</div>"
+						+" <div class=\"col-md-5\" >"
+						+ "		<input type="+"text "+"size="+"4"+" class="+"form-control style="+"display:none"+" name="+"textAreaWeather id="+"wCon"+$countWeather+"txtInpW"+">"
+						+"</div>"
+						+" <div class=\"col-md-1\" >"
+						+"<span id="+"wCon"+$countWeather+"helpW style=\"display:none\" title=\"Om du vil at temperaturen til været vist i grafen skal være større en f.eks 15 grader, skriver du '15' i tekstfeltet.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+						+"</div>"
+						+"</div>"
+						
+						+ "		<input type="+"text "+"size="+"4"+" style="+"display:none"+" id="+"toWeather"+$countWeather+" name="+"toWeather class="+"toWeather"+">"
+						+ "		<input type="+"text "+"size="+"4"+" style="+"display:none"+" id="+"fromWeather"+$countWeather+" name="+"fromWeather class="+"fromWeather"+">"
+						
+					
+						+"</div>"
+			
+			$countWeather++;
+			$("#countWeather").val($countWeather - 1);
+			weather = $("<div>" + weather + "</div>");
+			$("#deleteForm", $(weather)).click(function() {
+				$countWeather--;
+				$("#countWeather").val($countWeather - 1);
+				$(this).parent().parent().parent().remove();
+				$(this).parent().update();
+			});
+
+			$(this).append(weather);
+			
+			$(function() {
+			    $( ".fromWeatherUser").datepicker({
+			        buttonImageOnly: true,
+			        dateFormat: "d MM",
+			       	altField: ".fromWeather",
+			       	altFormat: "mm-dd"
+			       });
+			    
+			       $(".fromWeatherUser").focus(function () {
+			           $(".ui-datepicker-year").hide();
+			           $("#ui-datepicker-div").position({
+			               my: "center top",
+			               at: "center bottom",
+			               of: $(this)
+			           });    
+			       });
+			    $( ".toWeatherUser").datepicker({
+			        buttonImageOnly: true,
+			        dateFormat: "d MM",
+			        altField: ".toWeather",
+			        altFormat: "mm-dd"
+			      });
+			   
+			    $(".toWeatherUser").focus(function () {
+			           $(".ui-datepicker-year").hide();
+			           $("#ui-datepicker-div").position({
+			               my: "center top",
+			               at: "center bottom",
+			               of: $(this)
+			           });    
+			       });
+			  });
+
+		};
+	})(jQuery);
+	
+	(function($) {
+		$countLogging = 1;
+		$.fn.addLogging = function() {
+				var logging = 
+					
+					"<div id=\"opacity\" class=\"jumbotron hero-spacer\">"					
+					+"<div class=\"row\">"					
+					+" <div class=\"col-md-2\" >"
+					+  "<input type=\"button\" id=\"deleteForm\" class=\"btn btn-danger\" value=\"X\"/>"
+					+"</div>"
+					+" <div class=\"col-md-9\" >"
+					+"<h style=\"font-size:2em\" class=\"white elgdata\">Skogsaktivitet</h>"		
+					+"</div>"
+					+"</div>"
+					+"<legend></legend>"
+					
+					+"<div class=\"row\">"
+					+"<div class=\"col-md-10\" >"
+					+ "     <td><select class=\"form-control\" name="+"logging id="+"logging"+" onclick="+"additionalSelectorLogging(this,"+$countLogging+") "+"</td>"
+					+ "	   	<td><option value="+"Hogstdata"+">Hogstdata</option>"
+					+ "	   	<td><option value="+"Ryddedata"+">Ryddedata</option>"
+					+ "	   	<td><option value="+"Beitedata"+">Beitedata</option>"
+					+ "	   	<td><option value="+"Formel"+">Formel</option>"
+					+ "		<td></select>"
+					+"</div>"
+					+"<div class=\"col-md-1\" >"
+					+"<span title=\"Velg skogsaktivitet.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+					+"</div>"
+					+"</div>"
+					
+					
+					+"<div id="+"formulaOptions"+$countLogging+" style="+"display:none"+">"
+					+"<div class=\"row\">"
+					+"<div class=\"col-md-10\" id=\"white\" >"
+					+ "&#931; (hogstvolum siste "
+					+ "		<input type="+"text "+"size="+"1"+" style=\"color:black\" name="+"yearLogging"+" value="+"15"+" class="+"loggingOptions"+$countLogging+">"
+					+ " år) + ((mål ryddet siste "
+					+ "		<input type="+"text "+"size="+"1"+" style=\"color:black\" name="+"yearClearance"+" value="+"6"+" class="+"loggingOptions"+$countLogging+">"
+					+ " år) * "
+					+ "		<input type="+"text "+"size="+"1"+" style=\"color:black\" name="+"loggingMultiplier"+" value="+"10"+" class="+"loggingOptions"+$countLogging+">"
+					+ " )"
+					+"</div>"
+					+"<div class=\"col-md-1\" >"
+					+"<span id="+"formulaOptions"+$countLogging+"helpL style=\"display:none\" title=\"Formelen kombinerer data fra både hogst og rydding. Formelen kan enkelt endres for en annen sammenheng.\" class=\"glyphicon glyphicon-question-sign\"></span>"
+					+"</div>"	
+					+"</div>"
+					+"</div>"
+					+"</div>"
+		
+			
+			$countLogging++;
+			$("#countLogging").val($countLogging - 1);
+			logging = $("<div>" + logging + "</div>");
+			$("#deleteForm", $(logging)).click(function() {
+				$countLogging--;
+				$("#countLogging").val($countLogging - 1);
+				$(this).parent().parent().parent().remove();
+				$(this).parent().update();
+			});
+
+			$(this).append(logging);
+			
+		};
+	})(jQuery);
+	
+	$(function() {
+		$("#add").bind("click", function() {
+			if ($countForms < 6) {
+				$("#elkcontainer").addForms();
+			}
+		});
+	});
+	
+	$(function() {
+		$("#weather").bind("click", function() {
+			if($countForms > 1){
+			if ($countWeather < 6) {
+			$("#weathercontainer").addWeather();
+			addStandardInput($countWeather);
+				}
+			}
+		});
+	});
+	
+	$(function() {
+		$("#loggingdata").bind("click", function() {
+			if($countForms > 1){
+			if ($countLogging < 5) {
+			$("#loggingcontainer").addLogging();
+			}
+		}
+		});
+	});
+</script>
+
+<form class="hero-spacer" name="graphProperties" id="properties" action="/showUserDefinedGraph" method="get">
+	<div class="row">
+	<div class="col-md-4">
+	<input type="button" id="add" value="+ Legg til graf"class="btn btn-default" onclick="showSubmitButton()">
+	<div id="elkcontainer"></div>
+	</div>
+	<div class="col-md-4">
+	<input type="button" id="weather" value="+ Legg til værdata"class="btn btn-default" onclick="checkForGraph()">
+	<div id="weathercontainer"></div>
+	</div>
+	<div class="col-md-4">
+	<div class="row"> 
+	<div class="col-md-8">
+	<input type="button" id="loggingdata" value="+ Legg til skogsaktivitet"class="btn btn-default" onclick="checkForGraph()">
+	</div>
+	<div class="col-md-4">
+	<input formnovalidate type="submit" id="submit" onclick="enableForms($countForms)" value="Vis graf" class="btn btn-primary" style=display:none >
+	</div>
+	</div>
+	<div id="loggingcontainer"></div>
+	</div>	
+	<input type="hidden" name="countForms" id="countForms" value=0 />
+	<input type="hidden" name="countWeather" id="countWeather" value=0 />
+	<input type="hidden" name="countLogging" id="countLogging" value=0 />
+	</div>	
+	<div id="dialog1" style="display:none" title="Informasjon">
+  <p>Værdata og skogsaktivitet kan ikke benyttes alene. Vennligst legg til en graf for å legge til værdata og/eller skogsaktivitet.</p>
+</div>
+<div id="dialog2" style="display:none" title="Informasjon">
+  <p>Du har ikke foretatt noe valg. Vennligst sett Y-aksen og/eller fjern ugyldig graf.</p>
+</div>	
+</form>
+	
+
+<script type="text/javascript">
+	function showSubmitButton() {
+		document.getElementById("submit").style.display = "block";
+	}
+
+	function additionalSelector(element) {
+		var currentField=element.id+'Field';
+		var currentSex=element.id+'Sex';
+		var currentTick=element.id+'Tick';
+		var currentYCon=element.id;
+		var currentDeerLice=element.id+'DeerLice';
+		var currentOpY=element.id+'opY';
+		var currentTxtInpY=element.id+'txtInpY';
+		var currentAgeGroup=element.id+'group';
+		var currentHelpY=element.id+'helpY';
+		var currentHelpX=element.id+'helpX';
+		
+		if (element.name == "orderBy"){
+			if(element.value == "")
+				$('#orderParam').hide();
+			else
+				$('#orderParam').show();
+		}
+		else if(element.value == "Område"){
+			$('#'+currentField).show();
+			if(element.name == "yAxisCondition"){
+				$('#'+currentTxtInpY).hide();
+				$('#'+currentOpY).show();
+				$('#'+currentSex).hide();
+				$('#'+currentDeerLice).hide();
+				$('#'+currentTick).hide();
+				$('#'+currentOpY).find('option[value="Lt"]').attr("disabled",true);
+				$('#'+currentOpY).find('option[value="Gt"]').attr("disabled",true);
+			}
+		}
+		else if (element.value == "Kjønn") {
+			$('#'+currentSex).show();
+				if(element.name == "yAxisCondition"){
+					$('#'+currentTxtInpY).hide();
+					$('#'+currentOpY).show();
+					$('#'+currentField).hide();
+					$('#'+currentTick).hide();
+					$('#'+currentDeerLice).hide();
+					$('#'+currentOpY).find('option[value="Lt"]').attr("disabled",true);
+					$('#'+currentOpY).find('option[value="Gt"]').attr("disabled",true);
+				}
+		}
+		else if (element.value == "Flått") {
+			$('#'+currentTick).show();
+				if(element.name == "yAxisCondition"){
+					$('#'+currentTxtInpY).hide();
+					$('#'+currentOpY).show();
+					$('#'+currentField).hide();
+					$('#'+currentSex).hide();
+					$('#'+currentDeerLice).hide();
+					$('#'+currentOpY).find('option[value="Lt"]').attr("disabled",true);
+					$('#'+currentOpY).find('option[value="Gt"]').attr("disabled",true);
+				}
+		}
+		else if (element.value == "Hjortelus") {
+			$('#'+currentDeerLice).show();
+				if(element.name == "yAxisCondition"){
+					$('#'+currentTxtInpY).hide();
+					$('#'+currentOpY).show();
+					$('#'+currentField).hide();
+					$('#'+currentTick).hide();
+					$('#'+currentSex).hide();
+					$('#'+currentOpY).find('option[value="Lt"]').attr("disabled",true);
+					$('#'+currentOpY).find('option[value="Gt"]').attr("disabled",true);
+				}
+		}
+		else if (element.name == "xAxisCondition"){
+			if(element.value == ""){
+				$('#opX').hide();
+				$('#txtInpX').hide();
+				$('#helpX').hide();
+			}
+			else{
+				$('#opX').show();
+				$('#txtInpX').show();
+				$('#helpX').show();
+			}
+		}
+		else if (element.name == "yAxisCondition"){
+			if(element.value == ""){
+				$('#'+currentOpY).hide();
+				$('#'+currentTxtInpY).hide();
+				$('#'+currentSex).hide();
+				$('#'+currentField).hide();
+				$('#'+currentDeerLice).hide();
+				$('#'+currentTick).hide();
+				$('#'+currentHelpY).hide();
+			}
+			else{
+				$('#'+currentOpY).show();
+				$('#'+currentTxtInpY).show();
+				$('#'+currentHelpY).show();
+				$('#'+currentSex).hide();
+				$('#'+currentField).hide();
+				$('#'+currentDeerLice).hide();
+				$('#'+currentTick).hide();
+				$('#'+currentOpY).find('option[value="Lt"]').attr("disabled",false);
+				$('#'+currentOpY).find('option[value="Gt"]').attr("disabled",false);
+			}
+		}
+	}
+	function addStandardInput(counter){
+		if (counter == 2){
+			$("#fromWeatherUser1").val("1 November");
+			$("#toWeatherUser1").val("1 April");
+			$("#wCon1").val('Temperatur');
+			$("#wCon1opW").val("Gt");
+			$("#wCon1txtInpW").val("-5");
+			$("#wCon1opW").show();
+			$("#wCon1txtInpW").show();
+			$("#fromWeather1").val("11-01");
+			$("#toWeather1").val("04-01");
+			$('#wCon1helpW').show();
+			
+		}
+		if (counter == 3){
+			$("#fromWeatherUser2").val("1 May");
+			$("#toWeatherUser2").val("1 September");
+			$("#wCon2").val('Temperatur');
+			$("#wCon2opW").val("Gt");
+			$("#wCon2txtInpW").val("15");
+			$("#wCon2opW").show();
+			$("#wCon2txtInpW").show();
+			$("#fromWeather2").val("05-01");
+			$("#toWeather2").val("09-01");
+			$('#wCon2helpW').show();
+		}
+		if (counter == 4){
+			$("#wCon3").val('Snødybde');
+			$("#wCon3opW").val("Gt");
+			$("#wCon3txtInpW").val("30");
+			$("#wCon3opW").show();
+			$("#wCon3txtInpW").show();
+			$('#wCon3helpW').show();
+			
+		}
+	}
+	function additionalSelectorWeather(element){
+		var currentTxtInpW=element.id+'txtInpW';
+		var currentOpW=element.id+'opW';
+		var currentHelpW=element.id+'helpW';
+		if (element.name == "weatherCondition"){
+			if(element.value == ""){
+				$('#'+currentOpW).hide();
+				$('#'+currentTxtInpW).hide();
+				$('#'+currentHelpW).hide();
+			}
+			else{
+				$('#'+currentOpW).show();
+				$('#'+currentTxtInpW).show();
+				$('#'+currentHelpW).show();
+			}
+		}
+	}
+	function additionalSelectorLogging(element,counter){
+		if(element.value=="Formel"){
+			$("#formulaOptions"+counter).show();
+			$("#formulaOptions"+counter+"helpL").show();
+		}
+		else{
+			$("#formulaOptions"+counter).hide();
+			$("#formulaOptions"+counter+"helpL").hide();
+		}
+	}
+	function restrictions(element,counter){
+		var currentYCon = "yCon"+counter;
+		var currentDev = "dev"+counter;
+		var currentRadios = "option"+counter;
+		if((element.value=="SettElg")||(element.value=="Bestand")){
+			$('#'+currentYCon).attr("disabled",true);
+			$('#'+currentDev).attr("disabled",true);
+			var radios = document.getElementsByName(currentRadios);
+			for (var i = 0; i< radios.length;  i++){
+			    radios[i].disabled = true;
+			}
+		}
+		else{
+		$('#'+currentYCon).attr("disabled",false);
+		$('#xCon').attr("disabled",true);
+		$('#order').attr("disabled",true);
+			
+		$('#xCon').attr("disabled",false);
+		$('#order').attr("disabled",false);
+		$('#'+currentDev).attr("disabled",false);
+		var radios = document.getElementsByName(currentRadios);
+		for (var i = 0; i< radios.length;  i++){
+		    radios[i].disabled = false;
+			}
+		}
+	}
+	function enableForms(counter){
+		for(var i=1; i<counter; i++){
+			$('#yCon'+i).attr("disabled",false);
+			$('#dev'+i).attr("disabled",false);
+			$('#xCon').attr("disabled",false);
+			$('#order').attr("disabled",false);
+			var radios = document.getElementsByName('option'+i);
+			for (var j = 0; j< radios.length;  j++){
+			    radios[j].disabled = false;
+			}
+		}
+		$('.fromWeatherUser').attr("disabled",true);
+		$('.toWeatherUser').attr("disabled",true);
+	}
+	function disableDev(element, counter){
+		if(element.value=="count")
+			$('#dev'+counter).attr("disabled",true);
+		else
+			$('#dev'+counter).attr("disabled",false);
+	}
+	function checkForGraph(){
+		if(document.getElementById("countForms").value == "0")
+			$("#dialog1").dialog();	
+	}
+</script>
+
+}

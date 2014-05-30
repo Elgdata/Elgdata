@@ -1,0 +1,45 @@
+@(title: String, jsonString : String) @main(title){
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="stylesheet" href="style.css" type="text/css">
+<script src="@routes.Assets.at("javascripts/amcharts/amcharts.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/amcharts/serial.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/statistics/stackedcolumn.js")" type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/amexport.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/rgbcolor.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/canvg.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/filesaver.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/jspdf.js" 
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/jspdf.plugin.addimage.js" 
+	type="text/javascript"></script>
+
+<script>
+	generateChart(@Html(jsonString));
+</script>
+
+<div id="opacity" class="jumbotron">
+	<div id="chartdiv" style="min-height: 500px;"></div>
+	
+<div class="row">
+<div class="col-lg-1">	</div>
+<form action="@routes.Statistics.showStackedColumnGraph()" method="get">	
+	<div class="col-lg-2">
+		<input type="text" id="startYear" class="form-control" name="startYear" placeholder="Fra År">
+	</div>
+	<div class="col-lg-2">			
+		<input type="text" id="endYear" class="form-control" name="endYear" placeholder="Til År">
+	</div>	
+	<div class="col-lg-1">	
+	<input type="submit" style="display: block;" class="btn btn-primary" value="Send" id="submit">
+	</div>
+</form>
+</div>
+</div>
+
+
+}

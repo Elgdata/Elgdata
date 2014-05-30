@@ -1,0 +1,305 @@
+@(title: String, totalAmountForms: Integer, stdDev: Integer, weatherCount: Integer, loggingCount: Integer, colorList: List[String], graphNames: List[String], yValues: List[String], stdBool: Map[Integer, String],
+stdGraph: List[List[String]], label: List[List[String]], data: List[List[String]], counter: List[Integer]) @main(title){
+
+<link rel="stylesheet" href="style.css" type="text/css">
+<script src="/assets/javascripts/amcharts/amcharts.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/serial.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/themes/none.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/amexport.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/rgbcolor.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/canvg.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/filesaver.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/jspdf.js" 
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/jspdf.plugin.addimage.js" 
+	type="text/javascript"></script>
+
+
+<script>
+			var chart;
+			var chartData = generateChartData();
+            var chart = AmCharts.makeChart("chartdiv", {
+                "type": "serial",
+                "theme": "none",
+                "pathToImages": "/assets/javascripts/amcharts/images/",
+                "legend": {
+                    "useGraphSettings": true,
+                    "position": "top",
+                    "color":"white"
+                    
+                },
+                "dataProvider": chartData,
+                "valueAxes": [{
+                    "id":"age",
+                    "title": "Alder (År)",
+                    "titleColor": "#ffffff",
+                    "axisColor": "#ffffff",
+                    "color":"white",
+                    "axisThickness": 2,
+                    "gridAlpha": 0,
+                    "axisAlpha": 1,
+                    "precision": 2,
+                    "position": "right"
+                }, {
+                    "id":"weather",
+                    "title": "Værdata (ant. dager)",
+                    "titleColor": "#ffffff",
+                    "axisColor": "#ffffff",
+                    "color":"white",
+                    "axisThickness": 2,
+                    "gridAlpha": 0,
+                    "offset": 80,
+                    "axisAlpha": 1,
+                    "position": "left"
+                },{
+                    "id":"weight",
+                    "title": "Vekt (kg.)",
+                    "titleColor": "#ffffff",
+                    "axisColor": "#ffffff",
+                    "color":"white",
+                    "axisThickness": 2,
+                    "gridAlpha": 0,
+                    "axisAlpha": 1,
+                    "position": "left"
+                },{
+                    "id":"logging",
+                    "title": "Hogstdata",
+                    "titleColor": "#ffffff",
+                    "axisColor": "#ffffff",
+                    "color":"white",
+                    "axisThickness": 2,
+                    "offset": 80,
+                    "gridAlpha": 0,
+                    "axisAlpha": 1,
+                    "position": "right"
+                }],
+                "graphs": [
+                    @for(i <- 0 until totalAmountForms + weatherCount + loggingCount){
+                    	@if(stdBool.get(i).equals("true")){
+                    {
+                    "valueAxis": "@yValues.get(i)",
+                    "lineColor": "@colorList.get(i)",
+                    "bullet": "round",
+                    "bulletBorderThickness": 1,
+                    "hideBulletsCount": 30,
+                    "type": "smoothedLine",
+                    "color":"white",
+                    "lineThickness": 2,
+                    "title": "@graphNames.get(i)",
+                    "valueField": "values"+@i,
+                    "categoryField": "categories",
+            		"fillAlphas": 0
+                	},{
+                        "valueAxis": "@yValues.get(i)",
+                        "lineColor": "black",
+                        "hideBulletsCount": 30,
+                        "type": "smoothedLine",
+                        "color":"white",
+                        "lineThickness": 1,
+                        "dashLength":5,
+                        "title": "St.avvik "+(@i+1)+" (øvre)",
+                        "valueField": "deviation"+(@counter.get(i)),
+                        "categoryField": "categories",
+                		"fillAlphas": 0
+                    	},{
+                            "valueAxis": "@yValues.get(i)",
+                            "lineColor": "black",
+                            "hideBulletsCount": 30,
+                            "color":"white",
+                            "type": "smoothedLine",
+                            "lineThickness": 1,
+                            "dashLength": 5,
+                            "title": "St.avvik "+(@i+1)+" (nedre)",
+                            "valueField": "deviation"+((@counter.get(i))+1),
+                            "categoryField": "categories",
+                    		"fillAlphas": 0
+                        	},
+                    	}
+                    	@if(stdBool.get(i).equals("false")||(stdBool.get(i).equals("logging"))){
+                    	{
+                            "valueAxis": "@yValues.get(i)",
+                            "lineColor": "@colorList.get(i)",
+                            "bullet": "round",
+                            "bulletBorderThickness": 1,
+                            "hideBulletsCount": 30,
+                            "type": "smoothedLine",
+                            "lineThickness": 2,
+                            "title": "@graphNames.get(i)",
+                            "valueField": "values"+@i,
+                            "categoryField": "categories",
+                    		"fillAlphas": 0
+                        	},
+                    	}
+                    	@if(stdBool.get(i).equals("weather")){
+                    	{
+                    		"valueAxis": "@yValues.get(i)",
+                            "lineColor": "@colorList.get(i)",
+                            "bullet": "round",
+                            @if(weatherCount>1){
+                            "hidden": true,
+                            	}
+                            "bulletBorderThickness": 1,
+                            "hideBulletsCount": 30,
+                            "type": "smoothedLine",
+                            "lineThickness": 2,
+                            "title": "@graphNames.get(i)",
+                            "valueField": "values"+@i,
+                            "categoryField": "categories",
+                    		"fillAlphas": 0
+                        	},
+                    	}
+                }
+                    @if(weatherCount>1){
+                		{
+                		"valueAxis": "weather",
+                        "lineColor": "#ffffff",
+                        "bullet": "round",
+                        "bulletBorderThickness": 1,
+                        "hideBulletsCount": 30,
+                        "type": "smoothedLine",
+                        "lineThickness": 2,
+                        "color":"white",
+                        "title": "Sum Værdata",
+                        "valueField": "weather",
+                        "categoryField": "categories",
+                		"fillAlphas": 0
+                    	},
+                	}],
+                "chartScrollbar": {},
+                "chartCursor": {
+                    "cursorPosition": "mouse"
+                },
+                "categoryField": "categories",
+                "categoryAxis": {
+                	"parseDates": false,
+                	"startOnAxis": true,
+                	"axisColor": "#ffffff",
+                	"equalSpacing": false,
+                	"color":"white",
+                    "minorGridEnabled": true
+                },
+                "exportConfig": {
+                    "menuTop": "21px",
+                    "menuBottom": "auto",
+                    "menuRight": "21px",
+                    "backgroundColor": "#efefef",
+                    
+                   "menuItemStyle"	: {
+                    "rollOverBackgroundColor"	: '#DDDDDD'},
+
+                    "menuItems": [{
+                        "textAlign": 'center',
+                        "icon": 'assets/images/download.png',
+                        "iconTitle": 'Lagre som bilde',
+                        "onclick":function(){},
+                        "items": [{
+                            "title": 'JPG',
+                            "format": 'jpg'
+                        }, {
+                            "title": 'PNG',
+                            "format": 'png'
+                        }, {
+                            "title": 'PDF',
+                            "format": 'pdf'
+                        }],
+                    }],
+                    "menuItemOutput":{
+                        "fileName":"elgdata",
+                        "backgroundColor":"#999999"
+                    }
+                }
+            });
+            
+            chart.numberFormatter = {
+            		  precision:1,decimalSeparator:".",thousandsSeparator:""
+            		};
+            chart.addListener("dataUpdated", zoomChart);
+            zoomChart();
+            
+            function zoomChart(){
+                chart.zoomToIndexes(chart.dataProvider.length - 20, chart.dataProvider.length - 1);
+            }
+              
+            function generateChartData() {
+                var chartData = [];
+				var xAxis;
+				var yAxis0;
+				var yAxis1;
+				var yAxis2;
+				var yAxis3;
+				var yAxis4;
+				var yAxis5;
+				var yAxis6;
+				var yAxis7;
+				var yAxis8;
+				var yAxis9;
+				var yAxis10;
+				var yAxis11;
+				var yAxis12;
+				var yAxis13;
+				var yAxis14;
+				
+				var std0;
+				var std1;
+				var std2;
+				var std3;
+				var std4;
+				var std5;
+				var std6;
+				var std7;
+				var std8;
+				var std9;
+				var std10;
+				var std11;
+				var std12;
+				var std13;
+				var std14;
+				var weatherSum;
+				
+							@for(j <- 0 until data.get(0).length){
+								xAxis = @label.get(0).get(j)
+								@for(i <- 0 until totalAmountForms+weatherCount+loggingCount){
+									yAxis@i = @data.get(i).get(j)
+									@if(stdBool.get(i).equals("true")){
+										@for(k <- 0 until stdDev){
+											std@k = @stdGraph.get(k).get(j)
+										}
+									}
+									@if(stdBool.get(i).equals("weatherSum")){
+											weatherSum = @data.get(i).get(j)
+									}
+								}
+								
+								chartData.push({
+									@for(i <- 0 until totalAmountForms+weatherCount+loggingCount){
+		                        		values@i: yAxis@i,
+		                        		@if(stdBool.get(i).equals("true")){
+		                        			@for(k <- 0 until stdDev){
+		                        				deviation@(k): std@(k),
+		                        			}
+		                        		}
+									@if(stdBool.get(i).equals("weatherSum")){
+											weather: weatherSum,
+										}
+									}
+		                        	categories: xAxis
+		                    	});
+							}	
+                return chartData;  
+                }
+        </script>
+        
+<!-- style="width: 600px; height: 400px;"s -->
+
+<div id="opacity" class="jumbotron hero-spacer">
+<div id="chartdiv" style="min-height: 600px;"></div>
+</div>
+
+}

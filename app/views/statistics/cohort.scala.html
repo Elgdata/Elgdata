@@ -1,0 +1,170 @@
+@(title: String) @main(title){
+
+<link rel="stylesheet" href="style.css" type="text/css">
+<script src="@routes.Assets.at("javascripts/amcharts/amcharts.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/amcharts/serial.js")" type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/amexport.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/rgbcolor.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/canvg.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/filesaver.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/jspdf.js" 
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/jspdf.plugin.addimage.js" 
+	type="text/javascript"></script>
+
+<!-- Include multiselect .js and .css -->
+<!-- <script type="text/javascript" src="@routes.Assets.at("javascripts/bootstrap-multiselect.js")"></script> -->
+<!-- <link rel="stylesheet" href="@routes.Assets.at("javascripts/bootstrap-multiselect.js")" type="text/css"/> -->
+
+<!-- Include jQuery UI & jQRangeSlider (.js + .css) -->
+<script type="text/javascript" src="@routes.Assets.at("jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js")"></script>
+<script type="text/javascript" src="@routes.Assets.at("jQRangeSlider-5.7.0/jQEditRangeSlider-min.js")"></script>
+<link rel="stylesheet" href="@routes.Assets.at("jQRangeSlider-5.7.0/css/iThing.css")" type="text/css"/>
+
+<script type="text/javascript" src="@routes.Assets.at("javascripts/bootstrap-tokenfield.min.js")"></script>
+<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap-tokenfield.css")">
+
+
+ <div class="col-md-3"></div>
+	<div class="col-md-6 hero-spacer">
+		<!--Fra ��r:	<select multiple id="startYear" class="form-control" name="startYear"> -->
+		 <input type="text" class="form-control" id="tokenfield" placeholder="Skriv inn ønsket årskull" />
+		 
+		 <script type="text/javascript">
+		
+		 $('#tokenfield').tokenfield()
+			</script>				 		 
+	</div>
+
+<div class="col-lg-12">
+	
+        <script type="text/javascript">
+									// age : 0, 2006:57, 2007:123...
+									var lineChart;
+									var colorArray = new Array("#ffffff","#be008c","#0F640F","#df0000",
+											"#079400", "#004eff", 
+											"#00ace6", "#e57300", "#e4cd32",
+											"#8400ff", "#545498", "#a86eaa",
+											"#612E2E","#000000");
+									function reloadAmCharts(data, arrayYears) {
+										var obj = jQuery.parseJSON(data);
+										//alert(JSON.stringify(obj));
+										chart = new AmCharts.AmSerialChart();
+										chart.dataProvider = obj.chartData;
+										chart.categoryField = "age";
+
+										// AXES
+										var categoryAxis = chart.categoryAxis;
+										categoryAxis.gridAlpha = 0;
+										categoryAxis.color = "white";
+										categoryAxis.gridThickness=0;
+										categoryAxis.axisThickness=0;
+										
+
+										var valueAxis = new AmCharts.ValueAxis();
+										valueAxis.axisAlpha = 0;
+										valueAxis.title = "Slaktevekt i kg";
+										valueAxis.titleColor = "white";
+										valueAxis.color = "white";
+										
+										chart.addValueAxis(valueAxis);
+										// GRAPH	
+										jQuery
+												.each(
+														arrayYears,
+														function(index, value) {
+															var graph = new AmCharts.AmGraph();
+															graph.title = value;
+															graph.lineColor = colorArray[index];
+															graph.valueField = value;
+															graph.bullet = "round";
+															graph.bulletSize = 10;
+															graph.type = "line";
+															graph.lineThickness = 3;
+															chart
+																	.addGraph(graph);
+														});
+
+										// CURSOR
+										var chartCursor = new AmCharts.ChartCursor();
+										chartCursor.cursorAlpha = 0;
+										chartCursor.zoomable = false;
+										chart.addChartCursor(chartCursor);
+
+										// LEGEND                  
+										var legend = new AmCharts.AmLegend();
+										legend.borderAlpha = 0.2;
+										legend.horizontalGap = 13;
+										chart.addLegend(legend);
+										
+										// EXPORT
+										chart.exportConfig = {
+											    menuTop: '0px',
+											    menuRight: '5px',
+											    menuBottom: 'auto',
+											    backgroundColor: '#efefef',
+											    menuItems: [{
+											        textAlign: 'center',
+											        onclick: function () {},
+											        icon: 'assets/images/download.png',
+											        iconTitle: 'Lagre som bilde',
+											        items: [{
+											            title: 'JPG',
+											            format: 'jpg'
+											        }, {
+											            title: 'PNG',
+											            format: 'png'
+											        }, {
+											            title: 'PDF',
+											            format: 'pdf'
+											        }]
+											    }],
+											    menuItemOutput:{
+											        fileName:"kohort",
+											        backgroundColor:"#999999"
+											    },
+											    menuItemStyle: {
+											        rollOverBackgroundColor: '#EFEFEF'
+											    }
+											}
+										chart.numberFormatter = {
+							            		  precision:1,decimalSeparator:".",thousandsSeparator:""
+							            		};
+										// WRITE
+										chart.write("chartdiv");
+									}
+									
+									chart.addListener("dataUpdated", zoomChart);
+
+									// this method is called when chart is first inited as we listen for "dataUpdated" event
+									function zoomChart() {
+										// different zoom methods can be used - zoomToIndexes, zoomToDates, zoomToCategoryValues
+										chart.zoomToIndexes(
+												chartData.length - 40,
+												chartData.length - 1);
+									}
+
+								</script>
+								
+
+	
+	<script type="text/javascript" src="@routes.JavascriptRoutes.javascriptRoutes"></script>
+	<script type="text/javascript" src="@routes.Assets.at("javascripts/statistics/cohort.js")"></script>
+	<script>
+		$("#tokenfield").change(function() {
+			var arrayYears = $('#tokenfield').tokenfield('getTokensList').split(",");
+			getCohortForYears(arrayYears);
+			$("#opacity").show();
+		});
+	</script>
+</form>
+<div id="opacity" class="jumbotron hero-spacer" style="display:none"> 
+        <div id="chartdiv" style="width: 100%; height: 500px;"></div>
+       
+</div>
+</div>
+}

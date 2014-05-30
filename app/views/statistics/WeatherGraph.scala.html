@@ -1,0 +1,145 @@
+@(title: String, jsonString : String) @main(title){
+<link rel="stylesheet" href="style.css" type="text/css">
+<script src="@routes.Assets.at("javascripts/amcharts/amcharts.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/amcharts/serial.js")" type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/amexport.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/rgbcolor.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/canvg.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/filesaver.js"
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/jspdf.js" 
+	type="text/javascript"></script>
+<script src="/assets/javascripts/amcharts/exporting/jspdf.plugin.addimage.js" 
+	type="text/javascript"></script>
+
+
+
+
+<script type="text/javascript">
+        
+        var chartData = @Html(jsonString);
+
+        var chart = AmCharts.makeChart("chartdiv", {
+            "type": "serial",
+            "theme": "none",
+            "pathToImages": "/assets/javascripts/amcharts/images/",
+            "legend": {
+                "useGraphSettings": true,
+                "color":"white"
+            },
+            "dataProvider": chartData,
+            "valueAxes": [{
+                "id":"tempY",
+                "axisColor": "#FF6600",
+                "axisThickness": 2,
+                "color":"white",
+                "gridAlpha": 0,
+                "axisAlpha": 1,
+                "position": "left"
+            }, {
+                "id":"snowY",
+                "axisColor": "#FCD202",
+                "axisThickness": 2,
+                "gridAlpha": 0,
+                "color":"white",
+                "axisAlpha": 1,
+                "position": "right"
+            }],
+            "graphs": [{
+                "valueAxis": "tempY",
+                "lineColor": "#FF6600",
+                "bullet": "round",
+                "bulletBorderThickness": 1,
+                "hideBulletsCount": 30,
+                "title": "Temperatur",
+                "valueField": "temperature",
+        		"fillAlphas": 0
+            }, {
+                "valueAxis": "snowY",
+                "lineColor": "#FCD202",
+                "bullet": "square",
+                "bulletBorderThickness": 1,
+                "hideBulletsCount": 30,
+                "color":"white",
+                "title": "Snødybde",
+                "valueField": "snowdepth",
+        		"fillAlphas": 0
+            }],
+            "chartScrollbar": {},
+            "chartCursor": {
+                "cursorPosition": "mouse"
+            },
+            "categoryField": "id",
+            "categoryAxis": {
+            	"parseDates": true,
+                "axisColor": "#DADADA",
+                "color":"white",
+                "minorGridEnabled": true
+            },
+            "exportConfig": {
+                "menuTop": "0px",
+                "menuBottom": "auto",
+                "menuRight": "5px",
+                "backgroundColor": "#efefef",
+                
+               "menuItemStyle"	: {
+                "rollOverBackgroundColor"	: '#DDDDDD'},
+
+                "menuItems": [{
+                    "textAlign": 'center',
+                    "icon": 'assets/images/download.png',
+                    "iconTitle": 'Lagre som bilde',
+                    "onclick":function(){},
+                    "items": [{
+                        "title": 'JPG',
+                        "format": 'jpg'
+                    }, {
+                        "title": 'PNG',
+                        "format": 'png'
+                    }, {
+                        "title": 'PDF',
+                        "format": 'pdf'
+                    }],
+                }],
+                "menuItemOutput":{
+                    "fileName":"vaer",
+                    "backgroundColor":"#999999"
+                }
+            }
+            
+        });
+		$( document ).ready(function() {
+        	setSelectYear(chartData);
+		});
+        
+        function setSelectYear(data){
+	        var max = Math.max.apply(Math, data.map(function(o){return o.year;}));
+	        var min = Math.min.apply(Math, data.map(function(o){return o.year;}));
+	        $("#startYear").val(min);
+	        $("#endYear").val(max+1);
+	        chart.zoomToIndexes(min, max);
+        }
+        </script>
+   <script>
+
+</script>
+
+<div id="opacity" class="jumbotron">
+<div id="chartdiv" style="width: 100%; height: 500px;"></div>
+
+<form action="@routes.Statistics.weatherGraph()" method="get">
+<div class="col-lg-2">
+	 	<input class="form-control " name="startYear" id="startYear" placeholder="Fra År">
+	</div>
+	<div class="col-lg-2">			
+		<input class="form-control" name="endYear" id="endYear" placeholder="Til År">
+	</div>
+	<div class="col-lg-1">
+	<button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-refresh"></i></button>
+	</div>
+	</form>
+</div>
+}

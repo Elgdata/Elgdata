@@ -1,0 +1,98 @@
+@(title: String, elkForm: Form[Elk])
+@import helper._
+@main(title){
+
+<!-- /.row -->
+<div id="opacity" class="jumbotron hero-spacer white">
+			        <div class="row">
+
+            <div class="col-md-3 portfolio-item">
+                
+			@form(action = routes.TableIO.submitEditedElk()) { 
+			@inputText(elkForm("id"),'class -> "form-control", '_label -> "Id", 'readonly -> "readonly")
+			@select(
+				elkForm("area.id"),
+				options(Area.options),
+				'class -> "form-control",
+				'_label -> "Viltlag",
+				'_showConstraints -> false
+				)
+				
+			@select(
+				elkForm("huntingfield.id"),
+				options(HuntingField.options),
+				'class -> "form-control",
+				'_label -> "JaktOmråde",
+				'_showConstraints -> false
+				)
+            </div>
+					
+            <div class="col-md-3 portfolio-item">
+			@select(
+				elkForm("sex.id"),
+				options(Sex.options),
+				'class -> "form-control",
+				'_label -> "Kjønn",
+				'_showConstraints -> false
+				)
+			@helper.inputDate(elkForm("date"),'class -> "form-control", '_showConstraints -> false, '_label -> "Dato", 'placeholder -> "yyyy-MM-dd")
+			@inputText(elkForm("weight"),
+				'class -> "form-control",
+				'_label -> "Vekt",
+				'_showConstraints -> false
+				)
+			</div>
+			<div class="col-md-3 portfolio-item">
+			@inputText(elkForm("veal"),
+			'class -> "form-control",
+				'_label -> "Kalv",
+				'_showConstraints -> false)
+			@inputText(elkForm("antlers"),
+			'class -> "form-control",
+				'_label -> "Tagger",
+				'_showConstraints -> false)
+			@inputText(elkForm("age"),
+			'class -> "form-control",
+				'_label -> "Alder",
+				'_showConstraints -> false
+			)
+			</div>
+			<div class="col-md-3 portfolio-item">
+			@inputText(elkForm("twin"),
+			'class -> "form-control",
+				'_label -> "Tvilling",
+				'_showConstraints -> false
+				)
+			@select(
+				elkForm("sumTick.id"),
+				options(Tick.options),
+				'class -> "form-control",
+				'_label -> "Flått",
+				'_showConstraints -> false
+				)
+			@select(
+				elkForm("sumLice.id"),
+				options(DeerLice.options),
+				'class -> "form-control",
+				'_label -> "Hjortelusflue",
+				'_showConstraints -> false
+				)
+			</div>
+			
+			<div class="row">
+			<div class="col-md-4 portfolio-item">
+			<button type="submit" onclick="indexRedirect()" class="btn btn-primary">Lagre</button>
+			</div>
+			</div>
+			}
+	</div>
+		</div>
+		
+		<script type="text/javascript">
+		function indexRedirect(){
+		window.location.href="/";	
+		}
+		</script>
+
+
+}

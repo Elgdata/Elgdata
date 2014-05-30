@@ -1,0 +1,119 @@
+@CHARSET "UTF-8";
+
+#message {
+	position:fixed;
+	right: 50px;
+	top: 75px;
+}
+
+#logo{
+	position: relative;
+	bottom: 10px;
+	height:30px;
+  	opacity: 0.7;
+}
+
+#logo:hover { 
+  	opacity: 1;
+}
+
+.main {
+	padding-left: 3em;
+	padding-right: 3em;
+}
+
+#homeLogo{
+	position: relative;
+	bottom: 40px;
+	height:30px;
+	left:260px;
+  	opacity: 0.1;
+ }
+ 
+@font-face{
+	font-family: elgfont;
+	src:url("../Font/timeburner.ttf"); 
+}
+@font-face{
+	font-family: kozoka;
+	src:url("../Font/KozGoPro.otf"); 
+}
+@font-face{
+	font-family: kozoka-normal;
+	src:url("../Font/KozGoPro-Regular.otf"); 
+} 
+ 
+*{font-family:kozoka-normal;}
+
+li{font-family:kozoka;}
+ 
+ .elgdata{
+	font-family: elgfont;
+ }
+  .kozoka{
+	font-family: kozoka;
+ }
+  #elgfont{
+	font-family:"elgfont";
+ }
+ 
+ .about{
+	font-family:"Myriad Pro";
+ }
+ 
+ #table{
+ 	font-family:"Fontin-Sans";
+ 	font-size:95%;
+ }
+
+a:hover {
+	background-color: #EEEEEE;
+	text-decoration: none;
+}
+
+.glyphicon-remove{
+	color:#D9534F;
+}
+
+.left-inner-addon {
+    position: relative;
+}
+.left-inner-addon input {
+    padding-left: 30px;    
+}
+.left-inner-addon i {
+    position: absolute;
+    padding: 10px 12px;
+    pointer-events: none;
+}
+#opacity{
+	background: rgba(191, 191, 191, 0.5); 
+}
+#white{
+	color:white;
+}
+body {
+   /* background-image:url("../images/elk3.jpg"); */
+   /* background-color: #134912; */
+   background-image:url("../images/g2.jpg");
+   background-attachment: fixed; 
+   -webkit-background-size: cover;
+   -o-background-size: cover;
+   -moz-background-size: cover;
+   background-size: cover;
+   
+  /* background-position: 0px -280px;  */
+}
+#footer{
+color:white;
+}
+.white{
+	color:white;
+}
+#white{
+	color:white;
+}
+
+.center {
+text-align: center	
+}

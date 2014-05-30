@@ -1,0 +1,236 @@
+@(title: String, allElk: List[Elk]) @main(title){
+
+
+<script type="text/javascript" src="@routes.Assets.at("jquery-ui-1.10.4.custom/js/jquery-ui-1.10.4.custom.min.js")"></script>
+<link rel="stylesheet" href="@routes.Assets.at("jquery-ui-1.10.4.custom/css/base/jquery.ui.all.css")" type="text/css"/>
+<div id="opacity" class="jumbotron hero-spacer">
+<div class="main">
+
+			
+
+
+
+<div class="row">
+	<form action="@routes.TableIO.showelk()" method="get">
+	<div class="col-lg-2">
+	 	<input class="form-control " name="startYear" placeholder="Fra år">
+	</div>
+	<div class="col-lg-2">			
+		<input class="form-control" name="endYear" placeholder="Til år">
+	</div>
+	<div class="col-lg-1">
+	
+	<button class="btn btn-primary" type="submit"><i class="glyphicon glyphicon-refresh"></i></button>
+	</div>
+	</form>
+	<div class="col-lg-4"></div>
+		<div class="col-lg-2">			
+		<form action="@routes.TableIO.addNewElk()">
+    <input type="submit" value="+ Opprett ny elg" class="btn btn-primary"  href="@routes.TableIO.addNewElk()">
+</form>
+	</div>
+	</div>
+	
+	<div class="row hero-spacer">
+	<div class="col-lg-8">
+	<input class="btn btn-default" value="Endre Visning" onclick="showHide();" />
+	<div class="row">
+			<div id="hideElement" role="navigation">
+			<div class="col-lg-2">
+	            <input type="checkbox" onclick="fnShowHide(0);" value="Viltlag" checked>  Viltlag<br>
+				<input type="checkbox" onclick="fnShowHide(1);" value="VL Navn" checked> VL Navn<br>
+				<input type="checkbox" onclick="fnShowHide(2);" value="Jaktfelt" checked> Jaktfelt<br>
+			</div>
+			<div class="col-lg-2">
+				<input type="checkbox" onclick="fnShowHide(3);" value="Kjønn" checked> Kjønn<br>
+				<input type="checkbox" onclick="fnShowHide(4);" value="Dato" checked> Dato<br>
+				<input type="checkbox" onclick="fnShowHide(5);" value="Vekt" checked> Vekt<br>
+			</div>
+			<div class="col-lg-2">
+				<input type="checkbox" onclick="fnShowHide(6);" value="Kalv" checked> Kalv<br>
+				<input type="checkbox" onclick="fnShowHide(7);" value="Tagger" checked> Tagger<br>
+				<input type="checkbox" onclick="fnShowHide(8);" value="Alder" checked> Alder<br>
+			</div>
+			<div class="col-lg-3">
+				<input type="checkbox" onclick="fnShowHide(9);" value="Tvilling" checked> Tvilling<br>
+				<input type="checkbox" onclick="fnShowHide(10);" value="Flått" checked> Flått<br>
+				<input type="checkbox" onclick="fnShowHide(11);" value="Hjortelusflue" checked> Hjortelusflue<br>
+			</div>
+			
+	</div>
+
+		</div>
+	</div>
+	</div>	
+
+	</div>
+	
+
+	<div class="row">
+		<div class="col-lg-12">
+		<!-- Create Table -->
+			<table id="elkTable" class="display" width="100%">
+				<thead class="white">
+					<tr>
+					   <td>Viltlag</td>
+					   <td>VL Navn</td>
+					   <td>Jaktfelt</td>
+					   <td>Kjønn</td>
+					   <td>Dato</td>
+					   <td>Vekt</td>
+					   <td>Kalv</td>
+					   <td>Tagger</td>
+					   <td>Alder</td>
+					   <td>Tvilling</td>
+					   <td>Flått</td>
+					   <td>Hjortelusflue</td>
+					   @if(session.get("username") != null) {
+					   	<td>Edit</td>
+					   	}
+					</tr>
+				</thead>
+				<tbody>
+				@for(Elk <- allElk){ 
+				<tr id="elk-@Elk.getId()">
+					<td>
+						@Elk.getArea()
+					</td>
+					<td>
+						@Elk.getArea().name
+					</td>
+					<td>
+						@Elk.getHuntingfield().name
+					</td>
+					<td>
+						@Elk.getSex()
+					</td>
+					<td>
+						@Elk.getStringDate()
+					</td>
+					<td>
+						@Elk.getWeight()
+					</td>
+					<td>
+						@Elk.getVeal()
+					</td>
+					<td>
+						@Elk.getAntlers()
+					</td>
+					<td>
+						@Elk.getAge()
+					</td>
+					<td>
+						@Elk.getTwin()
+					</td>
+					<td>
+						@Elk.getSumTick()
+					</td>
+					<td>
+						@Elk.getSumLice()
+					</td>
+					@if(session.get("username") != null){
+					<td>
+						<a href="@routes.TableIO.editElk(Elk.getId())" style="color:black" class="glyphicon glyphicon-pencil"></a>
+						<a href="#" id="deleteElk" style="color:black" class="glyphicon glyphicon-trash" data-role="button" onClick="deleteElk(@Elk.getId())" style="color:#D9534F;"></a>			
+					</td>
+					}
+				</tr>
+				}
+				</tbody>
+				<tfoot class="white">
+					<tr>
+					   <td>Viltlag</td>
+					   <td>VL Navn</td>
+					   <td>Jaktfelt</td>
+					   <td>Kjønn</td>
+					   <td>Dato</td>
+					   <td>Vekt</td>
+					   <td>Kalv</td>
+					   <td>Tagger</td>
+					   <td>Alder</td>
+					   <td>Tvilling</td>
+					   <td>Flått</td>
+					   <td>Hjortelusflue</td>
+					   @if(session.get("username") != null){
+					   	<td>Edit</td>
+					   	}
+					</tr>
+				</tfoot>
+			</table>
+			
+			<script>
+				$(document).ready(function() {
+					var table = $('#elkTable').dataTable({
+						"sDom": 'T<"clear">lfrtip',
+						"oTableTools": {
+							"sSwfPath": "@{routes.Assets.at("TableTools/swf/copy_csv_xls_pdf.swf")}",
+							"aButtons": [
+							                "print",
+							                {
+							                    "sExtends":    "collection",
+							                    "sButtonText": "Save",
+							                    "aButtons":    [ 	
+							                    					"xls",
+													                {
+								                    					"sExtends": "csv",
+	                    												"sFieldBoundary": '',
+	                    												"sFieldSeperator": ";" 
+                    												},
+							                    					{
+													                    "sExtends": "pdf",
+													                    "sPdfOrientation": "landscape"
+													                }
+    
+	                											]
+                    											
+							                }
+							            ]
+						},
+						"sScrollY" : "600px",
+						"bPaginate" : false
+					});
+				});
+
+				function fnShowHide(iCol) {
+					/* Get the DataTables object again - this is not a recreation, just a get of the object */
+					var oTable = $('#elkTable').dataTable();
+
+					var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+					oTable.fnSetColumnVis(iCol, bVis ? false : true);
+				}
+			</script>
+			 </div>
+	</div>
+		
+			<script src="@routes.Assets.at("javascripts/jquery.dataTables.min.js")" type="text/javascript"></script>
+			<script src="@routes.Assets.at("TableTools/js/dataTables.tableTools.min.js")" type="text/javascript"></script>
+			<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/jquery.dataTables.css")" type="text/css"/>
+			<link rel="stylesheet" media="screen" href="@routes.Assets.at("TableTools/css/dataTables.tableTools.min.css")" type="text/css"/>
+			
+			<script type="text/javascript" src="@routes.JavascriptRoutes.javascriptRoutes"></script>
+			<script type="text/javascript" src="@routes.Assets.at("javascripts/tableio/crud.js")"></script>
+
+	<script>
+		$("#hideElement").hide();
+		var hidden = true;
+		function showHide() {
+			if (hidden) {
+				$("#hideElement").show(500);
+				hidden = false;
+			} else {
+				$("#hideElement").hide(500);
+				hidden = true;
+			}
+		}
+	</script>
+	
+
+<hr>
+<div id="delete-elk-dialog" style="display: none;">
+<p>Er du sikker på at du vil slette denne?</p>
+</div>
+<div>
+</div>
+</div>
+
+}

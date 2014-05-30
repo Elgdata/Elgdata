@@ -1,0 +1,134 @@
+@(title: String)(content: Html)
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--  <meta name="Data om Elg" content="">
+<meta name="Elgdata 2014" content=""> -->
+
+<title>@title</title>
+<!-- Style sheets -->
+
+<link rel="stylesheet" type="text/css"href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/heroic-features.css")">
+<link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/site.css")">
+<link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/favicon.png")">
+<!-- Scripts -->
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="@routes.Assets.at("bootstrap/js/bootstrap.min.js")" type="text/javascript"></script>
+</head>
+<body>
+
+
+<nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
+<div class="container">
+   <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" 
+         data-target="#example-navbar-collapse">
+         <span class="sr-only">Toggle navigation</span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+         <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" id="logo" href="@routes.Homepage.index()"><img src="@routes.Assets.at("images/logoHvitSmall40.png")" /></a>
+   </div>
+   <div class="collapse navbar-collapse" id="example-navbar-collapse">
+      <ul class="nav navbar-nav">
+       @if(Http.Context.current.get() == null || session.get("username") == null){
+       }else{	       
+          <li><a href="@routes.TableIO.showelk()"><span class="glyphicon glyphicon-list"></span> ElgData</a></li>
+         }
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+               <span class="glyphicon glyphicon-stats"></span> Statistikk <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+               	<li role="presentation" class="dropdown-header"><span class="glyphicon glyphicon-stats"> Grafer</span> </li>
+			   	<li><a href="@routes.UserDefinedGraph.edit()">Egendefinert graf</a></li>					
+       			<li><a href="@routes.Statistics.showStackedColumnGraph()">Antall skutt elg</a></li>
+       			<li><a href="@routes.Statistics.lineGraphWeight()">Slaktevekt</a></li>
+       			<li><a href="@routes.Statistics.getPopulation()">Bestand</a></li>
+       			<li><a href="@routes.Statistics.showCohortWeight()">Kohort</a></li>
+       			<li><a href="@routes.Statistics.weatherGraph()">Vær</a></li>
+            </ul>
+         </li>
+         
+          <li><a href="@routes.SavedGraphs.showGraphs()"><span class="glyphicon glyphicon-floppy-disk"></span> Lagrede grafer</a></li>
+         
+          @if(Http.Context.current.get() == null || session.get("username") == null){
+          }else{		       
+         <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+               <span class="glyphicon glyphicon-question-sign"></span> Hjelp <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+               <li role="presentation" class="dropdown-header"><span class="glyphicon glyphicon-info-sign"></span> Veiledning</li>
+               <li><a href="@routes.Homepage.csvMal()">CSV-mal</a></li>
+			   <li><a href="@routes.Homepage.showcsv()">Lag CSV</a></li>
+			 </ul>
+         </li>
+         }
+         
+         <li class="dropdown">
+           @if(Http.Context.current.get() == null || session.get("username") == null){						
+					<li><a href="@routes.Security.loginForm"><span class="glyphicon glyphicon-ok-sign"></span> Logg inn </a></li>
+					} else {
+		    <li>		    	
+       				<li class= "dropdown" data-dropdown="dropdown">
+	         			<a id="" class="dropdown-toggle" data-toggle="dropdown" href="#">
+				         <span class="glyphicon glyphicon-cog"></span> Admin <b class="caret"></b>
+	         			</a>
+	         			<ul class="dropdown-menu" >
+							<li role="presentation" class="dropdown-header"><span class="glyphicon glyphicon-file"></span> Last opp fil</li>
+							<li><a href="@routes.FileIO.upload()">Skutt elg</a></li>
+								<li><a href="@routes.FileIO.uploadSeenElk()">Sett elg </a></li>
+								<li><a href="@routes.FileIO.uploadWeather()">Vær</a></li>
+								<li><a href="@routes.FileIO.showLoggingData()">Skogsaktivitet</a></li>
+								<li role="presentation" class="divider"></li>					
+								<li><a href="@routes.Security.showUsers"><span class="glyphicon glyphicon-user"></span>
+								 Administrer brukere </a></li>
+								 <li><a href="@routes.Backup.showBackupConsole()"><span class="glyphicon glyphicon-hdd"></span>
+								 Backup </a></li>
+								<li><a href="@routes.Security.logout"><span
+										class="glyphicon glyphicon-remove-sign"></span> Logg ut</a></li>
+			        	</ul>
+      				</li>
+    		</li>
+					}
+      </ul>
+   </div>
+    </div>
+</nav>
+
+
+
+	<div class="container">
+		<!--Vis flash melding -->
+		@if(Http.Context.current.get() != null && flash.contains("message")) {
+		@Html(flash.get("message"))
+		<script type="text/javascript">
+			$("#message").fadeOut(4000)
+		</script>
+		} 
+		@content
+		<footer>
+			<div class="row">
+			<div class="col-lg-5" id="footer">
+				</div>
+				<div class="col-lg-7" id="footer">
+					<p>Copyright &copy; Elgdata @{Integer.valueOf(new
+						Date().format("yyyy"))}</p>
+				</div>
+			</div>
+		</footer>
+
+	</div>
+	<!-- /.container -->
+</body>
+
+
+<script src="@routes.Assets.at("javascripts/ga.js")" type="text/javascript"></script>
+</html>

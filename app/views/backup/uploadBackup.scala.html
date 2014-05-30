@@ -1,0 +1,40 @@
+@(message: String) @main(message){
+<form name="fileUploadForm" method="POST" enctype="multipart/form-data"
+	action="@routes.Backup.submitBackupFile()">
+
+<div class="row">
+<div class="col-md-4 hero-spacer">
+	
+	<div id="opacity" class="jumbotron">
+		
+		<legend><span class="elgdata" id="white"><h3>Last opp fil</h3></span></legend> </a></h2>
+		
+		
+			<input type="file" name="sqlfile"> <br> <br>
+			<div class="row">
+		<div class="col-md-4">
+			
+			
+			<p>
+			
+				<input name="2" value="Last opp" type="submit"
+					class="btn btn-primary">
+			</p>
+			</div>
+			<div class="col-md-3">
+			<input type="button" onclick="indexRedirect()" value="Avbryt" class="btn btn-danger">
+			</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</form>
+
+<script type="text/javascript">
+function indexRedirect(){
+	window.location.href="/";	
+}
+</script>
+}
+
+

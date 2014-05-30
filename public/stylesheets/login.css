@@ -1,0 +1,28 @@
+.elk{
+ background-position: 0px -280px;
+    
+}
+#login{
+	opacity: 0.9;
+}
+
+@font-face{
+	font-family: elgfont;
+	src:url("../Font/timeburner.ttf"); 
+}
+
+.elgdata{
+	font-family: elgfont;
+	color:white;
+ }
+ 
+ body {
+   background-image:url("../images/g2.jpg");
+   -webkit-background-size: cover;
+    -o-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+   
+
+}
+
